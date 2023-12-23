@@ -1,6 +1,6 @@
 import openai
-from PyQt6.QtWidgets import QFileDialog
 import pyperclip
+from PyQt6.QtWidgets import QFileDialog
 
 
 def whisper(client, model, choice):
