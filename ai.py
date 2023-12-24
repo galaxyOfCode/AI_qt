@@ -1,19 +1,16 @@
-import os
+from os import getenv
 import sys
 
 from PyQt6.QtGui import QFont
-from PyQt6.QtWidgets import *
-
+from PyQt6.QtWidgets import QApplication, QWidget, QGridLayout, QFrame, QVBoxLayout, QRadioButton, QPushButton, QLabel, QTextEdit, QFileDialog
 from openai import OpenAI
+
 from chat import chat
 from code_review import code_reviewer
 from image import vision, image
 from voice import tts, whisper
 from help import help_text
 
-client = OpenAI()
-
-VERSION = "1.3"
 BTN_WIDTH = 80
 FONT_SIZE = 14
 FONT = "Arial"
@@ -36,35 +33,22 @@ TTS_MODEL = "tts-1-1106"
 TTS_VOICE = "echo"
 MAX_TOKENS = 4000
 
-rb1, rb2, rb3, rb4, rb5, rb6, rb7, rb8, rb9, rb10, rb11, rb12 = [None] * 12
-user_input, asst_resp, tutor_input = None, None, None
-enter_btn, cancel_btn, quit_btn, clipboard = None, None, None, None
+api_key = getenv("OPENAI_API_KEY")
 
-api_key = os.environ.get("OPENAI_API_KEY")
-
-
-def list_gpt_models(client):
+def get_model_names(client, option):
     '''List only the GPT models available through the API'''
 
     model_list = client.models.list()
     models_data = model_list.data
     model_ids = [model.id for model in models_data]
-    gpt_model_ids = [
-        model_id for model_id in model_ids if model_id.startswith("gpt")]
-    gpt_model_ids.sort()
-    header = "Current GPT Models\n------------------\n"
-    content = ("\n".join(gpt_model_ids))
-    return header + content
-
-
-def list_models(client):
-    ''' List ALL openAI models available through the API '''
-
-    model_list = client.models.list()
-    models_data = model_list.data
-    model_ids = [model.id for model in models_data]
+    if option == 1:
+        model_ids = [
+            model_id for model_id in model_ids if model_id.startswith("gpt")]
     model_ids.sort()
-    header = "Current openAI Models\n---------------------\n"
+    if option == 1:
+        header = "Current openAI GPT Models:\n\n"
+    else:
+        header = "Current openAI Models:\n\n"
     content = ("\n".join(model_ids))
     return header + content
 
@@ -81,182 +65,195 @@ def settings():
     return content
 
 
-def on_cancel_click():
-    '''Clear all text boxes and reset radio button'''
-
-    user_input.clear()
-    tutor_input.clear()
-    asst_resp.clear()
-    rb2.setChecked(True)
-    user_input.setFocus()
-
-
-def on_help_click():
-    content = help_text()
-    asst_resp.setPlainText(content)
-
-
-def on_enter_click():
-    ''' Execute function associated with selected radio button'''
-
-    enter_btn.setEnabled(False)
-    text = user_input.toPlainText()
-    if (rb1.isChecked() or rb2.isChecked()):
-        if (rb1.isChecked()):
-            chat_model = GPT3_MODEL
-        else:
-            chat_model = GPT4_MODEL
-        content = chat(client, chat_model,
-                       CHAT_TEMP, FREQ_PENALTY, 1, text, "")
-    elif (rb3.isChecked() or rb4.isChecked()):
-        tutor = tutor_input.toPlainText()
-        if (rb3.isChecked()):
-            chat_model = GPT3_MODEL
-        else:
-            chat_model = GPT4_MODEL
-        content = chat(client, chat_model,
-                       TUTOR_TEMP, FREQ_PENALTY, 0, text, tutor)
-    elif rb5.isChecked():
-        review_choice = QFileDialog.getOpenFileName(None, "Select a File")
-        content = code_reviewer(client, CODE_REVIEW_MODEL, review_choice[0])
-    elif rb6.isChecked():
-        url = image(client, IMG_MODEL, SIZE, STYLE, text)
-        content = f"<a href='{url}'>{url}</a>"
-    elif rb7.isChecked():
-        img_path = QFileDialog.getOpenFileName(None, "Select a File")
-        content = vision(api_key, VISION_MODEL, MAX_TOKENS, img_path[0])
-    elif rb8.isChecked():
-        whisper_choice = QFileDialog.getOpenFileName(None, "Select a File")
-        content = whisper(client, WHISPER_MODEL, whisper_choice[0])
-    elif (rb9.isChecked()):
-        content = tts(client, TTS_MODEL, TTS_VOICE, text)
-    elif (rb10.isChecked()):
-        content = list_gpt_models(client)
-    elif (rb11.isChecked()):
-        content = list_models(client)
-    elif (rb12.isChecked()):
-        content = settings()
-    if rb6.isChecked():
-        asst_resp.setHtml(content)
-    else:
-        asst_resp.setPlainText(content)
-    clipboard.setText(content)
-    user_input.clear()
-    enter_btn.setEnabled(True)
-
-
-def on_quit_click():
-    '''Exit program'''
-
-    sys.exit()
-
-
 # Window
-def window():
-    ''' Main program '''
+class MainWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.client = OpenAI()
+        self.default_font_norm = QFont(FONT, FONT_SIZE)
+        app.setFont(self.default_font_norm)
+        self.default_font_bold = QFont(FONT, FONT_SIZE)
+        self.default_font_bold.setBold(True)
+        self.setGeometry(100, 50, 900, 500)
+        self.setWindowTitle("AI Assitant")
+        self.clipboard = QApplication.clipboard()
 
-    global rb1, rb2, rb3, rb4, rb5, rb6, rb7, rb8, rb9, rb10, rb11, rb12, user_input, asst_resp, tutor_input, cancel_btn, quit_btn, enter_btn, clipboard
-    app = QApplication(sys.argv)
-    clipboard = QApplication.clipboard()
-    default_font_norm = QFont(FONT, FONT_SIZE)
-    app.setFont(default_font_norm)
-    default_font_bold = QFont(FONT, FONT_SIZE)
-    default_font_bold.setBold(True)
+        # Create a layout
+        self.grid = QGridLayout()
 
-    main_window = QWidget()
-    main_window.setGeometry(100, 50, 900, 500)
-    main_window.setWindowTitle(f"AI Assitant")
+        # Create frames
+        self.radioframe = QFrame(self)
+        self.buttonframe = QFrame(self)
+        self.mainframe = QFrame(self)
 
-    # Create a layout
-    grid = QGridLayout()
+        # Add frames to the layout
+        self.grid.addWidget(self.radioframe, 0, 0)
+        self.grid.addWidget(self.buttonframe, 1, 0)
+        self.grid.addWidget(self.mainframe, 0, 1, 2, 1)
 
-    # Create frames
-    radioframe = QFrame(main_window)
-    buttonframe = QFrame(main_window)
-    mainframe = QFrame(main_window)
+        # Radio button widgets
+        self.vLayout1 = QVBoxLayout()
+        radio_buttons = ["Chat 3.5", "Chat 4.0", "Tutor 3.5", "Tutor 4.0",
+                         "Code Review", "Image Gen", "Vision", "Speech-to-Text", "Text-to-Speech", "List GPT Models", "List All Models", "List Settings"]
+        for i, label in enumerate(radio_buttons, start=1):
+            setattr(self, f'rb{i}', QRadioButton(label))
+            self.vLayout1.addWidget(getattr(self, f'rb{i}'))
+        self.rb2.setChecked(True)
+        self.radioframe.setLayout(self.vLayout1)
 
-    # Add frames to the layout
-    grid.addWidget(radioframe, 0, 0)
-    grid.addWidget(buttonframe, 1, 0)
-    grid.addWidget(mainframe, 0, 1, 2, 1)
+        # Push button widgets
+        self.vLayout2 = QVBoxLayout()
+        self.cancel_btn = QPushButton("Clear")
+        self.cancel_btn.setFixedWidth(BTN_WIDTH)
+        self.help_btn = QPushButton("Help")
+        self.help_btn.setFixedWidth(BTN_WIDTH)
+        self.quit_btn = QPushButton("Quit")
+        self.quit_btn.setFixedWidth(BTN_WIDTH)
+        self.enter_btn = QPushButton("Enter")
+        self.enter_btn.setFixedWidth(BTN_WIDTH)
+        self.vLayout2.addWidget(self.cancel_btn)
+        self.vLayout2.addWidget(self.help_btn)
+        self.vLayout2.addWidget(self.quit_btn)
+        self.vLayout2.addWidget(self.enter_btn)
+        self.buttonframe.setLayout(self.vLayout2)
 
-    # Radio button widgets
-    vLayout1 = QVBoxLayout()
-    rb1 = QRadioButton("Chat 3.5")
-    rb2 = QRadioButton("Chat 4.0")
-    rb2.setChecked(True)
-    rb3 = QRadioButton("Tutor 3.5")
-    rb4 = QRadioButton("Tutor 4.0")
-    rb5 = QRadioButton("Code Review")
-    rb6 = QRadioButton("Image Gen")
-    rb7 = QRadioButton("Vision")
-    rb8 = QRadioButton("Speech-to-Text")
-    rb9 = QRadioButton("Text-to-Speech")
-    rb10 = QRadioButton("List GPT")
-    rb11 = QRadioButton("List All")
-    rb12 = QRadioButton("List Settings")
-    vLayout1.addWidget(rb1)
-    vLayout1.addWidget(rb2)
-    vLayout1.addWidget(rb3)
-    vLayout1.addWidget(rb4)
-    vLayout1.addWidget(rb5)
-    vLayout1.addWidget(rb6)
-    vLayout1.addWidget(rb7)
-    vLayout1.addWidget(rb8)
-    vLayout1.addWidget(rb9)
-    vLayout1.addWidget(rb10)
-    vLayout1.addWidget(rb11)
-    vLayout1.addWidget(rb12)
-    radioframe.setLayout(vLayout1)
+        self.cancel_btn.clicked.connect(self.on_cancel_click)
+        self.help_btn.clicked.connect(self.on_help_click)
+        self.quit_btn.clicked.connect(self.on_quit_click)
+        self.enter_btn.clicked.connect(self.on_enter_click)
 
-    # Push button widgets
-    vLayout2 = QVBoxLayout()
-    cancel_btn = QPushButton("Clear")
-    cancel_btn.setFixedWidth(BTN_WIDTH)
-    help_btn = QPushButton("Help")
-    help_btn.setFixedWidth(BTN_WIDTH)
-    quit_btn = QPushButton("Quit")
-    quit_btn.setFixedWidth(BTN_WIDTH)
-    enter_btn = QPushButton("Enter")
-    enter_btn.setFixedWidth(BTN_WIDTH)
-    vLayout2.addWidget(cancel_btn)
-    vLayout2.addWidget(help_btn)
-    vLayout2.addWidget(quit_btn)
-    vLayout2.addWidget(enter_btn)
-    buttonframe.setLayout(vLayout2)
-    cancel_btn.clicked.connect(on_cancel_click)
-    help_btn.clicked.connect(on_help_click)
-    quit_btn.clicked.connect(on_quit_click)
-    enter_btn.clicked.connect(on_enter_click)
+        # Text box widgets
+        self.vLayout3 = QVBoxLayout()
+        self.tutor_lbl = QLabel("Tutor:")
+        self.tutor_lbl.setFont(self.default_font_bold)
+        self.tutor_input = QTextEdit()
+        self.tutor_input.setFixedHeight(TUTOR_INPUT_HT)
+        self.user_lbl = QLabel("User:")
+        self.user_lbl.setFont(self.default_font_bold)
+        self.user_input = QTextEdit()
+        self.user_input.setFixedHeight(USER_INPUT_HT)
+        self.asst_lbl = QLabel("Assistant:")
+        self.asst_lbl.setFont(self.default_font_bold)
+        self.asst_resp = QTextEdit()
+        self.asst_resp.setReadOnly(True)
+        self.asst_resp.setFixedHeight(ASST_RESP_HT)
+        self.vLayout3.addWidget(self.tutor_lbl)
+        self.vLayout3.addWidget(self.tutor_input)
+        self.vLayout3.addWidget(self.user_lbl)
+        self.vLayout3.addWidget(self.user_input)
+        self.vLayout3.addWidget(self.asst_lbl)
+        self.vLayout3.addWidget(self.asst_resp)
+        self.mainframe.setLayout(self.vLayout3)
 
-    # Text box widgets
-    vLayout3 = QVBoxLayout()
-    tutor_lbl = QLabel("Tutor:")
-    tutor_lbl.setFont(default_font_bold)
-    tutor_input = QTextEdit()
-    tutor_input.setFixedHeight(TUTOR_INPUT_HT)
-    user_lbl = QLabel("You:")
-    user_lbl.setFont(default_font_bold)
-    user_input = QTextEdit()
-    user_input.setFixedHeight(USER_INPUT_HT)
-    asst_lbl = QLabel("Assistant:")
-    asst_lbl.setFont(default_font_bold)
-    asst_resp = QTextEdit()
-    asst_resp.setReadOnly(True)
-    asst_resp.setFixedHeight(ASST_RESP_HT)
-    vLayout3.addWidget(tutor_lbl)
-    vLayout3.addWidget(tutor_input)
-    vLayout3.addWidget(user_lbl)
-    vLayout3.addWidget(user_input)
-    vLayout3.addWidget(asst_lbl)
-    vLayout3.addWidget(asst_resp)
-    mainframe.setLayout(vLayout3)
+        self.user_input.setFocus()
+        self.setLayout(self.grid)
+        self.show()
 
-    user_input.setFocus()
-    main_window.setLayout(grid)
-    main_window.show()
-    sys.exit(app.exec())
+    def on_cancel_click(self):
+        '''Clear all text boxes and reset radio button'''
+
+        self.user_input.clear()
+        self.tutor_input.clear()
+        self.asst_resp.clear()
+        self.rb2.setChecked(True)
+        self.user_input.setFocus()
+
+    def on_quit_click(self):
+        '''Exit program'''
+
+        sys.exit()
+
+    def on_help_click(self):
+        '''Displays Help text'''
+
+        content = help_text()
+        self.asst_resp.setPlainText(content)
+        self.clipboard.setText(content)
+
+    def no_prompt_user(self):
+        '''Error message when no prompt detected'''
+
+        self.asst_resp.setPlainText("Please enter a prompt in the 'User:' box")
+        self.enter_btn.setEnabled(True)
+        return
+
+    def get_file_name(self):
+        ''' Gets a file name to pass along to one of the openAI functions '''
+
+        file = QFileDialog.getOpenFileName(None, "Select a File")
+        return "" if file == "" else file[0]
+
+    def on_enter_click(self):
+        ''' Execute function associated with selected radio button'''
+
+        self.enter_btn.setEnabled(False)
+        self.text = self.user_input.toPlainText()
+        if (self.rb1.isChecked() or self.rb2.isChecked()):
+            if self.text == "":
+                self.no_prompt_user()
+                return
+            if (self.rb1.isChecked()):
+                chat_model = GPT3_MODEL
+            else:
+                chat_model = GPT4_MODEL
+            content = chat(self.client, chat_model,
+                           CHAT_TEMP, FREQ_PENALTY, 1, self.text, "")
+        elif (self.rb3.isChecked() or self.rb4.isChecked()):
+            tutor = self.tutor_input.toPlainText()
+            if self.text == "":
+                self.no_prompt_user()
+                return
+            if tutor == "":
+                self.asst_resp.setPlainText(
+                    "Please enter a subject area in the 'Tutor:' box")
+                self.enter_btn.setEnabled(True)
+                return
+            if (self.rb3.isChecked()):
+                chat_model = GPT3_MODEL
+            else:
+                chat_model = GPT4_MODEL
+            content = chat(self.client, chat_model,
+                           TUTOR_TEMP, FREQ_PENALTY, 0, self.text, tutor)
+        elif self.rb5.isChecked():
+            review_choice = self.get_file_name()
+            content = code_reviewer(
+                self.client, CODE_REVIEW_MODEL, review_choice)
+        elif self.rb6.isChecked():
+            if self.text == "":
+                self.no_prompt_user()
+                return
+            url = image(self.client, IMG_MODEL, SIZE, STYLE, self.text)
+            content = f"<a href='{url}'>{url}</a>"
+        elif self.rb7.isChecked():
+            img_path = self.get_file_name()
+            content = vision(api_key, VISION_MODEL, MAX_TOKENS, img_path)
+        elif self.rb8.isChecked():
+            whisper_choice = self.get_file_name()
+            content = whisper(self.client, WHISPER_MODEL, whisper_choice)
+        elif (self.rb9.isChecked()):
+            if self.text == "":
+                self.no_prompt_user()
+                return
+            content = tts(self.client, TTS_MODEL, TTS_VOICE, self.text)
+        elif (self.rb10.isChecked()):
+            content = get_model_names(self.client, 1)
+        elif (self.rb11.isChecked()):
+            content = get_model_names(self.client, 0)
+        elif (self.rb12.isChecked()):
+            content = settings()
+        if self.rb6.isChecked():
+            self.asst_resp.setHtml(content)
+            self.clipboard.setText(url)
+            self.enter_btn.setEnabled(True)
+            return
+        else:
+            self.asst_resp.setPlainText(content)
+        self.clipboard.setText(content)
+        self.user_input.clear()
+        self.enter_btn.setEnabled(True)
 
 
 if __name__ == '__main__':
-    window()
+    app = QApplication(sys.argv)
+    mw = MainWindow()
+    sys.exit(app.exec())
