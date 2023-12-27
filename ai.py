@@ -1,81 +1,36 @@
 from os import getenv
 import sys
 
-from PyQt6.QtGui import QFont
-from PyQt6.QtWidgets import QApplication, QWidget, QGridLayout, QFrame, QVBoxLayout, QRadioButton, QPushButton, QLabel, QTextEdit, QFileDialog
 from openai import OpenAI
+from PyQt6.QtGui import QFont
+from PyQt6.QtCore import QCoreApplication
+from PyQt6.QtWidgets import (QApplication, QWidget, QGridLayout, QFrame,
+                             QVBoxLayout, QRadioButton, QPushButton, QLabel,
+                             QTextEdit)
 
-from chat import chat
-from code_review import code_reviewer
-from image import vision, image
-from voice import tts, whisper
 from help import help_text
+from handlers import (get_model_names, get_settings, handle_chat,
+                      handle_code_review, handle_image, handle_tts, handle_vision, handle_whisper)
 
 BTN_WIDTH = 80
-FONT_SIZE = 14
-FONT = "Arial"
+DEFAULT_FONT = QFont("Arial", 14)
+ASST_FONT = QFont("Menlo", 13)
 TUTOR_INPUT_HT = 30
 USER_INPUT_HT = 100
 ASST_RESP_HT = 300
 
-GPT3_MODEL = "gpt-3.5-turbo-1106"
-GPT4_MODEL = "gpt-4-1106-preview"
-CODE_REVIEW_MODEL = "gpt-4-1106-preview"
-FREQ_PENALTY = .4
-CHAT_TEMP = .8
-TUTOR_TEMP = .2
-IMG_MODEL = "dall-e-3"
-SIZE = "1024x1024"
-STYLE = "vivid"
-VISION_MODEL = "gpt-4-vision-preview"
-WHISPER_MODEL = "whisper-1"
-TTS_MODEL = "tts-1-1106"
-TTS_VOICE = "echo"
-MAX_TOKENS = 4000
-
 api_key = getenv("OPENAI_API_KEY")
 
-def get_model_names(client, option):
-    '''List only the GPT models available through the API'''
-
-    model_list = client.models.list()
-    models_data = model_list.data
-    model_ids = [model.id for model in models_data]
-    if option == 1:
-        model_ids = [
-            model_id for model_id in model_ids if model_id.startswith("gpt")]
-    model_ids.sort()
-    if option == 1:
-        header = "Current openAI GPT Models:\n\n"
-    else:
-        header = "Current openAI Models:\n\n"
-    content = ("\n".join(model_ids))
-    return header + content
-
-
-def settings():
-    '''Prints off the hardcoded "Magic Numbers" '''
-
-    header = "Current Settings:\n-----------------------------------\n"
-    body = "GPT3_MODEL:\t\t" + GPT3_MODEL + "\nGPT4_MODEL:\t\t" + GPT4_MODEL + "\nCODE_REVIEW_MODEL:\t" + CODE_REVIEW_MODEL + "\nIMG_MODEL:\t\t" + IMG_MODEL + "\nSIZE:\t\t\t" + SIZE + "\nSTYLE:\t\t\t" + STYLE + "\nVISION_MODEL:\t\t" + VISION_MODEL + "\nWHISPER_MODEL:\t\t" + WHISPER_MODEL + \
-        "\nTTS_MODEL:\t\t" + TTS_MODEL + "\nTTS_VOICE:\t\t" + TTS_VOICE + "\nTUTOR_TEMP:\t\t" + str(TUTOR_TEMP) + \
-        "\nCHAT_TEMP:\t\t" + str(CHAT_TEMP) + "\nFREQ_PENALTY:\t\t" + \
-        str(FREQ_PENALTY) + "\nMAX_TOKENS:\t\t" + str(MAX_TOKENS)
-    content = header + body
-    return content
-
-
-# Window
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.client = OpenAI()
-        self.default_font_norm = QFont(FONT, FONT_SIZE)
+        self.default_font_norm = DEFAULT_FONT
         app.setFont(self.default_font_norm)
-        self.default_font_bold = QFont(FONT, FONT_SIZE)
+        self.default_font_bold = DEFAULT_FONT
         self.default_font_bold.setBold(True)
         self.setGeometry(100, 50, 900, 500)
-        self.setWindowTitle("AI Assitant")
+        self.setWindowTitle("AI Assistant")
         self.clipboard = QApplication.clipboard()
 
         # Create a layout
@@ -94,7 +49,8 @@ class MainWindow(QWidget):
         # Radio button widgets
         self.vLayout1 = QVBoxLayout()
         radio_buttons = ["Chat 3.5", "Chat 4.0", "Tutor 3.5", "Tutor 4.0",
-                         "Code Review", "Image Gen", "Vision", "Speech-to-Text", "Text-to-Speech", "List GPT Models", "List All Models", "List Settings"]
+                         "Code Review", "Image Gen", "Vision", "Speech-to-Text",
+                         "Text-to-Speech", "List GPT Models", "List All Models", "List Settings"]
         for i, label in enumerate(radio_buttons, start=1):
             setattr(self, f'rb{i}', QRadioButton(label))
             self.vLayout1.addWidget(getattr(self, f'rb{i}'))
@@ -136,6 +92,7 @@ class MainWindow(QWidget):
         self.asst_lbl.setFont(self.default_font_bold)
         self.asst_resp = QTextEdit()
         self.asst_resp.setReadOnly(True)
+        self.asst_resp.setFont(ASST_FONT)
         self.asst_resp.setFixedHeight(ASST_RESP_HT)
         self.vLayout3.addWidget(self.tutor_lbl)
         self.vLayout3.addWidget(self.tutor_input)
@@ -149,107 +106,87 @@ class MainWindow(QWidget):
         self.setLayout(self.grid)
         self.show()
 
-    def on_cancel_click(self):
-        '''Clear all text boxes and reset radio button'''
-
+    def on_cancel_click(self) -> None:
+        """ Clear all text boxes and reset radio button """
         self.user_input.clear()
         self.tutor_input.clear()
         self.asst_resp.clear()
         self.rb2.setChecked(True)
         self.user_input.setFocus()
 
-    def on_quit_click(self):
-        '''Exit program'''
-
-        sys.exit()
-
-    def on_help_click(self):
-        '''Displays Help text'''
-
+    def on_help_click(self) -> None:
+        """Displays Help text"""
         content = help_text()
         self.asst_resp.setPlainText(content)
         self.clipboard.setText(content)
 
-    def no_prompt_user(self):
-        '''Error message when no prompt detected'''
+    def on_quit_click(self) -> None:
+        """ Exit program """
+        QCoreApplication.quit()
 
+    def no_prompt_user(self) -> None:
+        """Error message when no user prompt detected"""
         self.asst_resp.setPlainText("Please enter a prompt in the 'User:' box")
         self.enter_btn.setEnabled(True)
-        return
 
-    def get_file_name(self):
-        ''' Gets a file name to pass along to one of the openAI functions '''
+    def no_prompt_tutor(self) -> None:
+        """Error message when no tutor prompt detected"""
+        self.asst_resp.setPlainText(
+            "Please enter a prompt in the 'Tutor:' box")
+        self.enter_btn.setEnabled(True)
 
-        file = QFileDialog.getOpenFileName(None, "Select a File")
-        return "" if file == "" else file[0]
+    def is_user_input_required(self) -> bool:
+        """ Is text field required for the selected radio button"""
+        return self.rb1.isChecked() or self.rb2.isChecked() or self.rb3.isChecked() or self.rb4.isChecked() or self.rb6.isChecked() or self.rb9.isChecked()
 
-    def on_enter_click(self):
-        ''' Execute function associated with selected radio button'''
+    def is_tutor_input_required(self) -> bool:
+        """ Is text field required for the selected radio button"""
+        return self.rb3.isChecked() or self.rb4.isChecked()
 
-        self.enter_btn.setEnabled(False)
-        self.text = self.user_input.toPlainText()
-        if (self.rb1.isChecked() or self.rb2.isChecked()):
-            if self.text == "":
-                self.no_prompt_user()
-                return
-            if (self.rb1.isChecked()):
-                chat_model = GPT3_MODEL
-            else:
-                chat_model = GPT4_MODEL
-            content = chat(self.client, chat_model,
-                           CHAT_TEMP, FREQ_PENALTY, 1, self.text, "")
-        elif (self.rb3.isChecked() or self.rb4.isChecked()):
-            tutor = self.tutor_input.toPlainText()
-            if self.text == "":
-                self.no_prompt_user()
-                return
-            if tutor == "":
-                self.asst_resp.setPlainText(
-                    "Please enter a subject area in the 'Tutor:' box")
-                self.enter_btn.setEnabled(True)
-                return
-            if (self.rb3.isChecked()):
-                chat_model = GPT3_MODEL
-            else:
-                chat_model = GPT4_MODEL
-            content = chat(self.client, chat_model,
-                           TUTOR_TEMP, FREQ_PENALTY, 0, self.text, tutor)
-        elif self.rb5.isChecked():
-            review_choice = self.get_file_name()
-            content = code_reviewer(
-                self.client, CODE_REVIEW_MODEL, review_choice)
-        elif self.rb6.isChecked():
-            if self.text == "":
-                self.no_prompt_user()
-                return
-            url = image(self.client, IMG_MODEL, SIZE, STYLE, self.text)
-            content = f"<a href='{url}'>{url}</a>"
-        elif self.rb7.isChecked():
-            img_path = self.get_file_name()
-            content = vision(api_key, VISION_MODEL, MAX_TOKENS, img_path)
-        elif self.rb8.isChecked():
-            whisper_choice = self.get_file_name()
-            content = whisper(self.client, WHISPER_MODEL, whisper_choice)
-        elif (self.rb9.isChecked()):
-            if self.text == "":
-                self.no_prompt_user()
-                return
-            content = tts(self.client, TTS_MODEL, TTS_VOICE, self.text)
-        elif (self.rb10.isChecked()):
-            content = get_model_names(self.client, 1)
-        elif (self.rb11.isChecked()):
-            content = get_model_names(self.client, 0)
-        elif (self.rb12.isChecked()):
-            content = settings()
+    def set_response(self, content) -> None:
+        """Implement setting the response in the UI"""
         if self.rb6.isChecked():
-            self.asst_resp.setHtml(content)
-            self.clipboard.setText(url)
-            self.enter_btn.setEnabled(True)
-            return
+            self.asst_resp.setHtml(f"<a href='{content}'>{content}</a>")
         else:
+            self.asst_resp.clear()
             self.asst_resp.setPlainText(content)
+
+    def on_enter_click(self) -> None:
+        """Execute function associated with selected radio button"""
+        self.enter_btn.setEnabled(False)
+        text = self.user_input.toPlainText()
+        tutor = self.tutor_input.toPlainText()
+
+        if not text and self.is_user_input_required():
+            self.no_prompt_user()
+            return
+
+        if not tutor and self.is_tutor_input_required():
+            self.no_prompt_tutor()
+            return
+
+        action_mapping = {
+            self.rb1: lambda: handle_chat(self.client, 1, 1, text, ""),
+            self.rb2: lambda: handle_chat(self.client, 2, 1, text, ""),
+            self.rb3: lambda: handle_chat(self.client, 3, 0, text, tutor),
+            self.rb4: lambda: handle_chat(self.client, 4, 0, text, tutor),
+            self.rb5: lambda: handle_code_review(self.client),
+            self.rb6: lambda: handle_image(self.client, text),
+            self.rb7: lambda: handle_vision(api_key),
+            self.rb8: lambda: handle_whisper(self.client),
+            self.rb9: lambda: handle_tts(self.client, text),
+            self.rb10: lambda: get_model_names(self.client, 1),
+            self.rb11: lambda: get_model_names(self.client, 0),
+            self.rb12: lambda: get_settings(),
+        }
+
+        for rb, action in action_mapping.items():
+            if rb.isChecked():
+                content = action()
+                break
+
+        self.set_response(content)
         self.clipboard.setText(content)
-        self.user_input.clear()
         self.enter_btn.setEnabled(True)
 
 
