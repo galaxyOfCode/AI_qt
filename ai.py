@@ -1,15 +1,38 @@
 from os import getenv
 import sys
 
+import configparser
 from openai import OpenAI
 from PyQt6.QtGui import QFont
-from PyQt6.QtWidgets import (QApplication, QWidget, QGridLayout)
+from PyQt6.QtWidgets import QApplication, QWidget, QGridLayout, QFileDialog
 
-from handlers import (get_model_names, get_settings, handle_chat,
-                      handle_code_review, handle_image, handle_tts, handle_vision, handle_whisper)
+from chat import chat
+from code_review import code_reviewer
+from image import vision, image
 from ui_components import MainFrame, ButtonFrame, RadioFrame
+from utilities import get_model_names, get_settings
+from voice import tts, whisper
 
-DEFAULT_FONT = QFont("Arial", 14)
+cfg = configparser.ConfigParser()
+cfg.read("config.ini")
+
+GPT3_MODEL = cfg["OPENAI"]["GPT3_MODEL"]
+GPT4_MODEL = cfg["OPENAI"]["GPT4_MODEL"]
+CODE_REVIEW_MODEL = cfg["OPENAI"]["GPT4_MODEL"]
+FREQ_PENALTY = float(cfg["OPENAI"]["FREQ_PENALTY"])
+CHAT_TEMP = float(cfg["OPENAI"]["CHAT_TEMP"])
+TUTOR_TEMP = float(cfg["OPENAI"]["TUTOR_TEMP"])
+IMG_MODEL = cfg["OPENAI"]["IMG_MODEL"]
+SIZE = cfg["OPENAI"]["SIZE"]
+STYLE = cfg["OPENAI"]["STYLE"]
+VISION_MODEL = cfg["OPENAI"]["VISION_MODEL"]
+WHISPER_MODEL = cfg["OPENAI"]["WHISPER_MODEL"]
+TTS_MODEL = cfg["OPENAI"]["TTS_MODEL"]
+TTS_VOICE = cfg["OPENAI"]["TTS_VOICE"]
+MAX_TOKENS = float(cfg["OPENAI"]["MAX_TOKENS"])
+FONT_FAMILY = cfg["UI"]["FONT_FAMILY"]
+FONT_SIZE = int(cfg["UI"]["FONT_SIZE"])
+DEFAULT_FONT = QFont(FONT_FAMILY, FONT_SIZE)
 
 api_key = getenv("OPENAI_API_KEY")
 
@@ -43,9 +66,9 @@ class MainWindow(QWidget):
         self.buttonframe.enter_btn.clicked.connect(self.on_enter_click)
 
         # Set layout
-        self.mainframe.user_input.setFocus()
         self.setLayout(self.grid)
         self.show()
+        self.mainframe.user_input.setFocus()
 
     def no_user_prompt(self) -> None:
         """Error message when no user prompt detected"""
@@ -61,19 +84,25 @@ class MainWindow(QWidget):
 
     def is_user_input_required(self) -> bool:
         """ Is text field required for the selected radio button"""
-        checked_buttons = ["rb1", "rb2", "rb3", "rb4", "rb6", "rb9"]
-        rb = self.radioframe.get_checked_button()
+        checked_buttons = ["Chat 3.5", "Chat 4.0", "Tutor 3.5",
+                           "Tutor 4.0", "Image Gen", "Text-to-Speech"]
+        rb = self.radioframe.get_checked_radio_button()
         return rb in checked_buttons
 
     def is_tutor_input_required(self) -> bool:
         """ Is text field required for the selected radio button"""
-        rb = self.radioframe.get_checked_button()
-        return rb == "rb3" or rb == "rb4"
+        rb = self.radioframe.get_checked_radio_button()
+        return rb == "Tutor 3.5" or rb == "Tutor 4.0"
+
+    def get_file_name(self) -> str:
+        """ Gets a file name to pass along to one of the openAI functions """
+        file = QFileDialog.getOpenFileName(None, "Select a File")
+        return "" if file == "" else file[0]
 
     def set_response(self, content) -> None:
         """Implement setting the response in the UI"""
-        rb = self.radioframe.get_checked_button()
-        if rb == "rb6":
+        rb = self.radioframe.get_checked_radio_button()
+        if rb == "Image Gen":
             self.mainframe.asst_resp.setHtml(
                 f"<a href='{content}'>{content}</a>")
         else:
@@ -95,18 +124,18 @@ class MainWindow(QWidget):
             return
 
         action_mapping = {
-            self.radioframe.rb1: lambda: handle_chat(self.client, 1, 1, text, ""),
-            self.radioframe.rb2: lambda: handle_chat(self.client, 2, 1, text, ""),
-            self.radioframe.rb3: lambda: handle_chat(self.client, 3, 0, text, tutor),
-            self.radioframe.rb4: lambda: handle_chat(self.client, 4, 0, text, tutor),
-            self.radioframe.rb5: lambda: handle_code_review(self.client),
-            self.radioframe.rb6: lambda: handle_image(self.client, text),
-            self.radioframe.rb7: lambda: handle_vision(api_key),
-            self.radioframe.rb8: lambda: handle_whisper(self.client),
-            self.radioframe.rb9: lambda: handle_tts(self.client, text),
-            self.radioframe.rb10: lambda: get_model_names(self.client, 1),
-            self.radioframe.rb11: lambda: get_model_names(self.client, 0),
-            self.radioframe.rb12: lambda: get_settings(),
+            self.radioframe.radio_buttons[0]: lambda: chat(self.client, GPT3_MODEL, CHAT_TEMP, FREQ_PENALTY, 1, text),
+            self.radioframe.radio_buttons[1]: lambda: chat(self.client, GPT4_MODEL, CHAT_TEMP, FREQ_PENALTY, 1, text),
+            self.radioframe.radio_buttons[2]: lambda: chat(self.client, GPT3_MODEL, TUTOR_TEMP, FREQ_PENALTY, 0, text, tutor),
+            self.radioframe.radio_buttons[3]: lambda: chat(self.client, GPT4_MODEL, TUTOR_TEMP, FREQ_PENALTY, 0, text, tutor),
+            self.radioframe.radio_buttons[4]: lambda: code_reviewer(self.client, GPT4_MODEL, self.get_file_name()),
+            self.radioframe.radio_buttons[5]: lambda: image(self.client, IMG_MODEL, SIZE, STYLE, text),
+            self.radioframe.radio_buttons[6]: lambda: vision(api_key, VISION_MODEL, MAX_TOKENS, self.get_file_name()),
+            self.radioframe.radio_buttons[7]: lambda: whisper(self.client, WHISPER_MODEL, self.get_file_name()),
+            self.radioframe.radio_buttons[8]: lambda: tts(self.client, TTS_MODEL, TTS_VOICE, text),
+            self.radioframe.radio_buttons[9]: lambda: get_model_names(self.client, 1),
+            self.radioframe.radio_buttons[10]: lambda: get_model_names(self.client, 0),
+            self.radioframe.radio_buttons[11]: lambda: get_settings(),
         }
 
         for rb, action in action_mapping.items():

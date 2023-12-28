@@ -2,7 +2,7 @@ import openai
 import pyperclip
 
 
-def chat(client, model, temperature, frequency_penalty, option, text, tutor):
+def chat(client, model, temperature, frequency_penalty, option, text, tutor=""):
     ''' 
     This is an openai chatbot.  
 
