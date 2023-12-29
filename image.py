@@ -1,8 +1,9 @@
 import openai
 import pyperclip
+import errors
 
 
-def image(client, model, size, style, text):
+def image(client, model, size, style, text) -> str:
     '''
     Image generator
 
@@ -19,39 +20,24 @@ def image(client, model, size, style, text):
         image_url = res.data[0].url
         pyperclip.copy(image_url)
         return image_url
-    except openai.APIConnectionError as e:
-        content = "The server could not be reached" + e.__cause__
-        return content
-    except openai.RateLimitError as e:
-        content = "A 429 status code was received; we should back off a bit."
-        return content
-    except openai.APIStatusError as e:
-        content = "Another non-200-range status code was received" + e.status_code + e.response
+    except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
+        content = errors.handle_openai_errors(e)
         return content
 
 
-def encode_image(image_path):
-    '''
-    Helper function for vision()
-    '''
-    import base64
-    try:
-        with open(image_path, "rb") as image_file:
-            return base64.b64encode(image_file.read()).decode("utf-8")
-    except OSError as e:
-        print(e)
-        return ""
-
-
-def vision(api_key, model, max_tokens, image_path):
+def vision(api_key, model, max_tokens, image_path) -> str:
     '''
     The user can select an image and ask for a description
     '''
     import requests
+    import base64
     from requests.exceptions import HTTPError, Timeout, RequestException
-    base64_image = encode_image(image_path)
-    if (base64_image == ""):
-        return
+    try:
+        with open(image_path, "rb") as image_file:
+            base64_image = base64.b64encode(image_file.read()).decode("utf-8")
+    except (OSError, FileNotFoundError, PermissionError) as e:
+        content = errors.handle_file_errors(e)
+        return content
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {api_key}"
@@ -81,17 +67,8 @@ def vision(api_key, model, max_tokens, image_path):
         response = requests.post(
             "https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
         data = response.json()
-    except HTTPError as http_err:
-        content = (f"HTTP error occurred: {http_err}")
-        return content
-    except Timeout as timeout_err:
-        content = (f"Request timed out: {timeout_err}")
-        return content
-    except RequestException as req_err:
-        content = (f"Error during request: {req_err}")
-        return content
-    except Exception as e:
-        content = (f"An unexpected error occurred: {e}")
+    except (HTTPError, Timeout, RequestException, Exception) as e:
+        content = errors.handle_request_errors(e)
         return content
     try:
         content = data["choices"][0]["message"]["content"]

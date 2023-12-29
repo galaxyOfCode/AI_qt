@@ -1,5 +1,6 @@
 import openai
 import pyperclip
+import errors
 
 
 def chat(client, model, temperature, frequency_penalty, option, text, tutor=""):
@@ -27,12 +28,6 @@ def chat(client, model, temperature, frequency_penalty, option, text, tutor=""):
         content = res.choices[0].message.content
         pyperclip.copy(content)
         return content
-    except openai.APIConnectionError as e:
-        content = "The server could not be reached" + e.__cause__
-        return content
-    except openai.RateLimitError as e:
-        content = "A 429 status code was received; we should back off a bit."
-        return content
-    except openai.APIStatusError as e:
-        content = "Another non-200-range status code was received\n" + e.status_code + "\n" + e.response
+    except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
+        content = errors.handle_openai_errors(e)
         return content

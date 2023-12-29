@@ -24,7 +24,7 @@ def get_model_names(client, option) -> str:
     model_list = client.models.list()
     models_data = model_list.data
     model_ids = [model.id for model in models_data]
-    if option == 1:
+    if option:
         model_ids = [
             model_id for model_id in model_ids if model_id.startswith("gpt")]
         header = "Current openAI GPT Models:\n\n"

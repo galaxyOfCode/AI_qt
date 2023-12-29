@@ -1,6 +1,7 @@
 import openai
 import pyperclip
 from PyQt6.QtWidgets import QFileDialog
+import errors
 
 
 def whisper(client, model, choice):
@@ -18,15 +19,11 @@ def whisper(client, model, choice):
             )
             pyperclip.copy(content)
             return content
-    except FileNotFoundError:
-        content = (f"Error: The file {choice} was not found.")
+    except (FileNotFoundError, PermissionError, OSError) as e:
+        content = errors.handle_file_errors(e)
         return content
-    except PermissionError:
-        content = (f"Error: Permission denied when trying to read {choice}.")
-        return content
-    except OSError:
-        content = (
-            f"Error: An error occurred while reading from the file {choice}.")
+    except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
+        content = errors.handle_openai_errors(e)
         return content
 
 
@@ -56,13 +53,6 @@ def tts(client, model, voice, text):
             content = "No file selected."
             return content
         
-    except openai.APIConnectionError as e:
-        content = "The server could not be reached\n" + e.__cause__
-        return content
-    except openai.RateLimitError as e:
-        content = "A 429 status code was received; we should back off a bit."
-        return content
-    except openai.APIStatusError as e:
-        content = "Another non-200-range status code was received" + \
-            e.status_code + "\n" + e.response
+    except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
+        content = errors.handle_openai_errors(e)
         return content
