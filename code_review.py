@@ -3,7 +3,7 @@ import pyperclip
 import errors
 
 
-def code_reviewer(client, model, file_path):
+def code_review(client, model, file_path) -> str:
     '''
     Reviews a code file.
     

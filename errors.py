@@ -13,7 +13,7 @@ def handle_file_errors(exception) -> str:
     return content
 
 
-def handle_openai_errors(exception):
+def handle_openai_errors(exception) -> str:
     if isinstance(exception, openai.APIConnectionError):
         content = "The server could not be reached\n" + \
             str(exception.__cause__)
@@ -25,7 +25,7 @@ def handle_openai_errors(exception):
     return content
 
 
-def handle_request_errors(exception):
+def handle_request_errors(exception) -> str:
     if isinstance(exception, HTTPError):
         content = "An HTTP error occurred"
     if isinstance(exception, Timeout):

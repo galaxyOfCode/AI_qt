@@ -3,7 +3,7 @@ import pyperclip
 import errors
 
 
-def image(client, model, size, style, text) -> str:
+def image(client, model, quality, text) -> str:
     '''
     Image generator
 
@@ -13,9 +13,7 @@ def image(client, model, size, style, text) -> str:
         res = client.images.generate(
             model=model,
             prompt=text,
-            size=size,
-            style=style,
-            n=1
+            quality=quality,
         )
         image_url = res.data[0].url
         pyperclip.copy(image_url)

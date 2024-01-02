@@ -10,13 +10,13 @@ FREQ_PENALTY = float(cfg["OPENAI"]["FREQ_PENALTY"])
 CHAT_TEMP = float(cfg["OPENAI"]["CHAT_TEMP"])
 TUTOR_TEMP = float(cfg["OPENAI"]["TUTOR_TEMP"])
 IMG_MODEL = cfg["OPENAI"]["IMG_MODEL"]
-SIZE = cfg["OPENAI"]["SIZE"]
-STYLE = cfg["OPENAI"]["STYLE"]
+QUALITY = cfg["OPENAI"]["QUALITY"]
 VISION_MODEL = cfg["OPENAI"]["VISION_MODEL"]
 WHISPER_MODEL = cfg["OPENAI"]["WHISPER_MODEL"]
 TTS_MODEL = cfg["OPENAI"]["TTS_MODEL"]
 TTS_VOICE = cfg["OPENAI"]["TTS_VOICE"]
 MAX_TOKENS = float(cfg["OPENAI"]["MAX_TOKENS"])
+
 
 def get_model_names(client, option) -> str:
     """List either the GPT models, or all models available through the API"""
@@ -42,8 +42,7 @@ def get_settings() -> str:
         "GPT4_MODEL:": GPT4_MODEL,
         "CODE_REVIEW_MODEL:": CODE_REVIEW_MODEL,
         "IMG_MODEL:": IMG_MODEL,
-        "SIZE:": SIZE,
-        "STYLE:": STYLE,
+        "QUALITY:": QUALITY,
         "VISION_MODEL:": VISION_MODEL,
         "WHISPER_MODEL:": WHISPER_MODEL,
         "TTS_MODEL:": TTS_MODEL,

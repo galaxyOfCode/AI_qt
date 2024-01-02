@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import QFileDialog
 import errors
 
 
-def whisper(client, model, choice):
+def whisper(client, model, choice) -> str:
     '''
     Transcribes a voice file to text
 
@@ -27,7 +27,7 @@ def whisper(client, model, choice):
         return content
 
 
-def tts(client, model, voice, text):
+def tts(client, model, voice, text) -> str:
     '''
     Text to speech
 

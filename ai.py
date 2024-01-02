@@ -1,13 +1,11 @@
 from os import getenv
 import sys
-
 import configparser
 from openai import OpenAI
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import QApplication, QWidget, QGridLayout, QFileDialog
-
 from chat import chat
-from code_review import code_reviewer
+from code_review import code_review
 from image import vision, image
 from ui_components import MainFrame, ButtonFrame, RadioFrame
 from utilities import get_model_names, get_settings
@@ -23,8 +21,7 @@ FREQ_PENALTY = float(cfg["OPENAI"]["FREQ_PENALTY"])
 CHAT_TEMP = float(cfg["OPENAI"]["CHAT_TEMP"])
 TUTOR_TEMP = float(cfg["OPENAI"]["TUTOR_TEMP"])
 IMG_MODEL = cfg["OPENAI"]["IMG_MODEL"]
-SIZE = cfg["OPENAI"]["SIZE"]
-STYLE = cfg["OPENAI"]["STYLE"]
+QUALITY = cfg["OPENAI"]["QUALITY"]
 VISION_MODEL = cfg["OPENAI"]["VISION_MODEL"]
 WHISPER_MODEL = cfg["OPENAI"]["WHISPER_MODEL"]
 TTS_MODEL = cfg["OPENAI"]["TTS_MODEL"]
@@ -42,7 +39,7 @@ class MainWindow(QWidget):
         super().__init__()
         self.client = OpenAI()
         self.default_font_norm = DEFAULT_FONT
-        app.setFont(self.default_font_norm)
+        self.setFont(self.default_font_norm)
         self.default_font_bold = DEFAULT_FONT
         self.default_font_bold.setBold(True)
         self.setGeometry(100, 50, 900, 500)
@@ -67,19 +64,12 @@ class MainWindow(QWidget):
 
         # Set layout
         self.setLayout(self.grid)
-        self.show()
         self.mainframe.user_input.setFocus()
 
-    def no_user_prompt(self) -> None:
+    def no_prompt(self, box) -> None:
         """Error message when no user prompt detected"""
         self.mainframe.asst_resp.setPlainText(
-            "Please enter a prompt in the 'User:' box")
-        self.buttonframe.enter_btn.setEnabled(True)
-
-    def no_tutor_prompt(self) -> None:
-        """Error message when no tutor prompt detected"""
-        self.mainframe.asst_resp.setPlainText(
-            "Please enter a prompt in the 'Tutor:' box")
+            f"Please enter a prompt in the '{box}:' box")
         self.buttonframe.enter_btn.setEnabled(True)
 
     def is_user_input_required(self) -> bool:
@@ -112,15 +102,16 @@ class MainWindow(QWidget):
     def on_enter_click(self) -> None:
         """Execute function associated with selected radio button"""
         self.buttonframe.enter_btn.setEnabled(False)
+        self.mainframe.asst_resp.setPlainText("Processing . . .")
         text = self.mainframe.user_input.toPlainText()
         tutor = self.mainframe.tutor_input.toPlainText()
 
         if not text and self.is_user_input_required():
-            self.no_user_prompt()
+            self.no_prompt("User")
             return
 
         if not tutor and self.is_tutor_input_required():
-            self.no_tutor_prompt()
+            self.no_prompt("Tutor")
             return
 
         action_mapping = {
@@ -128,8 +119,8 @@ class MainWindow(QWidget):
             self.radioframe.radio_buttons[1]: lambda: chat(self.client, GPT4_MODEL, CHAT_TEMP, FREQ_PENALTY, 1, text),
             self.radioframe.radio_buttons[2]: lambda: chat(self.client, GPT3_MODEL, TUTOR_TEMP, FREQ_PENALTY, 0, text, tutor),
             self.radioframe.radio_buttons[3]: lambda: chat(self.client, GPT4_MODEL, TUTOR_TEMP, FREQ_PENALTY, 0, text, tutor),
-            self.radioframe.radio_buttons[4]: lambda: code_reviewer(self.client, GPT4_MODEL, self.get_file_name()),
-            self.radioframe.radio_buttons[5]: lambda: image(self.client, IMG_MODEL, SIZE, STYLE, text),
+            self.radioframe.radio_buttons[4]: lambda: code_review(self.client, GPT4_MODEL, self.get_file_name()),
+            self.radioframe.radio_buttons[5]: lambda: image(self.client, IMG_MODEL, QUALITY, text),
             self.radioframe.radio_buttons[6]: lambda: vision(api_key, VISION_MODEL, MAX_TOKENS, self.get_file_name()),
             self.radioframe.radio_buttons[7]: lambda: whisper(self.client, WHISPER_MODEL, self.get_file_name()),
             self.radioframe.radio_buttons[8]: lambda: tts(self.client, TTS_MODEL, TTS_VOICE, text),
@@ -148,7 +139,12 @@ class MainWindow(QWidget):
         self.buttonframe.enter_btn.setEnabled(True)
 
 
-if __name__ == '__main__':
+def main():
     app = QApplication(sys.argv)
     mw = MainWindow()
+    mw.show()
     sys.exit(app.exec())
+
+
+if __name__ == "__main__":
+    main()

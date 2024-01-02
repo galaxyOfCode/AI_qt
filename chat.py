@@ -3,7 +3,7 @@ import pyperclip
 import errors
 
 
-def chat(client, model, temperature, frequency_penalty, option, text, tutor=""):
+def chat(client, model, temperature, frequency_penalty, option, text, tutor="") -> str:
     ''' 
     This is an openai chatbot.  
 
