@@ -1,8 +1,5 @@
-from os import getenv
 import sys
-import configparser
 from openai import OpenAI
-from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import QApplication, QWidget, QGridLayout, QFileDialog
 from chat import chat
 from code_review import code_review
@@ -10,37 +7,18 @@ from image import vision, image
 from ui_components import MainFrame, ButtonFrame, RadioFrame
 from utilities import get_model_names, get_settings
 from voice import tts, whisper
+from config import Config
 
-cfg = configparser.ConfigParser()
-cfg.read("config.ini")
-
-GPT3_MODEL = cfg["OPENAI"]["GPT3_MODEL"]
-GPT4_MODEL = cfg["OPENAI"]["GPT4_MODEL"]
-CODE_REVIEW_MODEL = cfg["OPENAI"]["GPT4_MODEL"]
-FREQ_PENALTY = float(cfg["OPENAI"]["FREQ_PENALTY"])
-CHAT_TEMP = float(cfg["OPENAI"]["CHAT_TEMP"])
-TUTOR_TEMP = float(cfg["OPENAI"]["TUTOR_TEMP"])
-IMG_MODEL = cfg["OPENAI"]["IMG_MODEL"]
-QUALITY = cfg["OPENAI"]["QUALITY"]
-VISION_MODEL = cfg["OPENAI"]["VISION_MODEL"]
-WHISPER_MODEL = cfg["OPENAI"]["WHISPER_MODEL"]
-TTS_MODEL = cfg["OPENAI"]["TTS_MODEL"]
-TTS_VOICE = cfg["OPENAI"]["TTS_VOICE"]
-MAX_TOKENS = float(cfg["OPENAI"]["MAX_TOKENS"])
-FONT_FAMILY = cfg["UI"]["FONT_FAMILY"]
-FONT_SIZE = int(cfg["UI"]["FONT_SIZE"])
-DEFAULT_FONT = QFont(FONT_FAMILY, FONT_SIZE)
-
-api_key = getenv("OPENAI_API_KEY")
+config = Config()
 
 
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.client = OpenAI()
-        self.default_font_norm = DEFAULT_FONT
+        self.default_font_norm = config.DEFAULT_FONT
         self.setFont(self.default_font_norm)
-        self.default_font_bold = DEFAULT_FONT
+        self.default_font_bold = config.DEFAULT_FONT
         self.default_font_bold.setBold(True)
         self.setGeometry(100, 50, 900, 500)
         self.setWindowTitle("AI Assistant")
@@ -115,15 +93,15 @@ class MainWindow(QWidget):
             return
 
         action_mapping = {
-            self.radioframe.radio_buttons[0]: lambda: chat(self.client, GPT3_MODEL, CHAT_TEMP, FREQ_PENALTY, 1, text),
-            self.radioframe.radio_buttons[1]: lambda: chat(self.client, GPT4_MODEL, CHAT_TEMP, FREQ_PENALTY, 1, text),
-            self.radioframe.radio_buttons[2]: lambda: chat(self.client, GPT3_MODEL, TUTOR_TEMP, FREQ_PENALTY, 0, text, tutor),
-            self.radioframe.radio_buttons[3]: lambda: chat(self.client, GPT4_MODEL, TUTOR_TEMP, FREQ_PENALTY, 0, text, tutor),
-            self.radioframe.radio_buttons[4]: lambda: code_review(self.client, GPT4_MODEL, self.get_file_name()),
-            self.radioframe.radio_buttons[5]: lambda: image(self.client, IMG_MODEL, QUALITY, text),
-            self.radioframe.radio_buttons[6]: lambda: vision(api_key, VISION_MODEL, MAX_TOKENS, self.get_file_name()),
-            self.radioframe.radio_buttons[7]: lambda: whisper(self.client, WHISPER_MODEL, self.get_file_name()),
-            self.radioframe.radio_buttons[8]: lambda: tts(self.client, TTS_MODEL, TTS_VOICE, text),
+            self.radioframe.radio_buttons[0]: lambda: chat(self.client, config.GPT3_MODEL, config.CHAT_TEMP, config.FREQ_PENALTY, 1, text),
+            self.radioframe.radio_buttons[1]: lambda: chat(self.client, config.GPT4_MODEL, config.CHAT_TEMP, config.FREQ_PENALTY, 1, text),
+            self.radioframe.radio_buttons[2]: lambda: chat(self.client, config.GPT3_MODEL, config.TUTOR_TEMP, config.FREQ_PENALTY, 0, text, tutor),
+            self.radioframe.radio_buttons[3]: lambda: chat(self.client, config.GPT4_MODEL, config.TUTOR_TEMP, config.FREQ_PENALTY, 0, text, tutor),
+            self.radioframe.radio_buttons[4]: lambda: code_review(self.client, config.GPT4_MODEL, self.get_file_name()),
+            self.radioframe.radio_buttons[5]: lambda: image(self.client, config.IMG_MODEL, config.QUALITY, text),
+            self.radioframe.radio_buttons[6]: lambda: vision(config.api_key, config.VISION_MODEL, config.MAX_TOKENS, self.get_file_name()),
+            self.radioframe.radio_buttons[7]: lambda: whisper(self.client, config.WHISPER_MODEL, self.get_file_name()),
+            self.radioframe.radio_buttons[8]: lambda: tts(self.client, config.TTS_MODEL, config.TTS_VOICE, text),
             self.radioframe.radio_buttons[9]: lambda: get_model_names(self.client, 1),
             self.radioframe.radio_buttons[10]: lambda: get_model_names(self.client, 0),
             self.radioframe.radio_buttons[11]: lambda: get_settings(),

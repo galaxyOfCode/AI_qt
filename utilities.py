@@ -1,21 +1,6 @@
-import configparser
+from config import Config
 
-cfg = configparser.ConfigParser()
-cfg.read("config.ini")
-
-GPT3_MODEL = cfg["OPENAI"]["GPT3_MODEL"]
-GPT4_MODEL = cfg["OPENAI"]["GPT4_MODEL"]
-CODE_REVIEW_MODEL = cfg["OPENAI"]["GPT4_MODEL"]
-FREQ_PENALTY = float(cfg["OPENAI"]["FREQ_PENALTY"])
-CHAT_TEMP = float(cfg["OPENAI"]["CHAT_TEMP"])
-TUTOR_TEMP = float(cfg["OPENAI"]["TUTOR_TEMP"])
-IMG_MODEL = cfg["OPENAI"]["IMG_MODEL"]
-QUALITY = cfg["OPENAI"]["QUALITY"]
-VISION_MODEL = cfg["OPENAI"]["VISION_MODEL"]
-WHISPER_MODEL = cfg["OPENAI"]["WHISPER_MODEL"]
-TTS_MODEL = cfg["OPENAI"]["TTS_MODEL"]
-TTS_VOICE = cfg["OPENAI"]["TTS_VOICE"]
-MAX_TOKENS = float(cfg["OPENAI"]["MAX_TOKENS"])
+config = Config()
 
 
 def get_model_names(client, option) -> str:
@@ -38,19 +23,19 @@ def get_model_names(client, option) -> str:
 def get_settings() -> str:
     """ Print all hardcoded 'Magic Numbers' """
     settings = {
-        "GPT3_MODEL:": GPT3_MODEL,
-        "GPT4_MODEL:": GPT4_MODEL,
-        "CODE_REVIEW_MODEL:": CODE_REVIEW_MODEL,
-        "IMG_MODEL:": IMG_MODEL,
-        "QUALITY:": QUALITY,
-        "VISION_MODEL:": VISION_MODEL,
-        "WHISPER_MODEL:": WHISPER_MODEL,
-        "TTS_MODEL:": TTS_MODEL,
-        "TTS_VOICE:": TTS_VOICE,
-        "TUTOR_TEMP:": TUTOR_TEMP,
-        "CHAT_TEMP:": CHAT_TEMP,
-        "FREQ_PENALTY:": FREQ_PENALTY,
-        "MAX_TOKENS:": MAX_TOKENS
+        "GPT3_MODEL:": config.GPT3_MODEL,
+        "GPT4_MODEL:": config.GPT4_MODEL,
+        "CODE_REVIEW_MODEL:": config.CODE_REVIEW_MODEL,
+        "IMG_MODEL:": config.IMG_MODEL,
+        "QUALITY:": config.QUALITY,
+        "VISION_MODEL:": config.VISION_MODEL,
+        "WHISPER_MODEL:": config.WHISPER_MODEL,
+        "TTS_MODEL:": config.TTS_MODEL,
+        "TTS_VOICE:": config.TTS_VOICE,
+        "TUTOR_TEMP:": config.TUTOR_TEMP,
+        "CHAT_TEMP:": config.CHAT_TEMP,
+        "FREQ_PENALTY:": config.FREQ_PENALTY,
+        "MAX_TOKENS:": config.MAX_TOKENS
     }
     longest_key_length = max(len(key) for key in settings)
     content = "Current Settings:\n\n"

@@ -1,22 +1,9 @@
-import configparser
 from PyQt6.QtWidgets import (
     QTextEdit, QFrame, QVBoxLayout, QRadioButton, QPushButton, QLabel)
-from PyQt6.QtGui import QFont
 from PyQt6.QtCore import QCoreApplication
+from config import Config
 
-cfg = configparser.ConfigParser()
-cfg.read("config.ini")
-
-BTN_WIDTH = int(cfg["UI"]["BTN_WIDTH"])
-TUTOR_INPUT_HT = int(cfg["UI"]["TUTOR_INPUT_HT"])
-USER_INPUT_HT = int(cfg["UI"]["USER_INPUT_HT"])
-ASST_RESP_HT = int(cfg["UI"]["ASST_RESP_HT"])
-ASST_FONT_FAMILY = cfg["UI"]["ASST_FONT_FAMILY"]
-ASST_FONT_SIZE = int(cfg["UI"]["ASST_FONT_SIZE"])
-ASST_FONT = QFont(ASST_FONT_FAMILY, ASST_FONT_SIZE)
-FONT_FAMILY = cfg["UI"]["FONT_FAMILY"]
-FONT_SIZE = int(cfg["UI"]["FONT_SIZE"])
-DEFAULT_FONT = QFont(FONT_FAMILY, FONT_SIZE)
+config = Config()
 
 
 class RadioFrame(QFrame):
@@ -67,10 +54,10 @@ class ButtonFrame(QFrame):
         self.enter_btn = QPushButton("Enter")
 
     def ui_properties(self) -> None:
-        self.clear_btn.setFixedWidth(BTN_WIDTH)
-        self.enter_btn.setFixedWidth(BTN_WIDTH)
-        self.quit_btn.setFixedWidth(BTN_WIDTH)
-        self.help_btn.setFixedWidth(BTN_WIDTH)
+        self.clear_btn.setFixedWidth(config.BTN_WIDTH)
+        self.enter_btn.setFixedWidth(config.BTN_WIDTH)
+        self.quit_btn.setFixedWidth(config.BTN_WIDTH)
+        self.help_btn.setFixedWidth(config.BTN_WIDTH)
 
     def layout_ui(self) -> None:
         self.button_layout.addWidget(self.clear_btn)
@@ -92,7 +79,7 @@ class ButtonFrame(QFrame):
 class MainFrame(QFrame):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.default_font_bold = DEFAULT_FONT
+        self.default_font_bold = config.DEFAULT_FONT
         self.default_font_bold.setBold(True)
         self.init_ui()
         self.ui_properties()
@@ -109,13 +96,13 @@ class MainFrame(QFrame):
 
     def ui_properties(self) -> None:
         self.tutor_lbl.setFont(self.default_font_bold)
-        self.tutor_input.setFixedHeight(TUTOR_INPUT_HT)
+        self.tutor_input.setFixedHeight(config.TUTOR_INPUT_HT)
         self.user_lbl.setFont(self.default_font_bold)
-        self.user_input.setFixedHeight(USER_INPUT_HT)
+        self.user_input.setFixedHeight(config.USER_INPUT_HT)
         self.asst_lbl.setFont(self.default_font_bold)
         self.asst_resp.setReadOnly(True)
-        self.asst_resp.setFont(ASST_FONT)
-        self.asst_resp.setFixedHeight(ASST_RESP_HT)
+        self.asst_resp.setFont(config.ASST_FONT)
+        self.asst_resp.setFixedHeight(config.ASST_RESP_HT)
         self.user_input.setFocus()
 
     def add_widgets(self) -> None:
