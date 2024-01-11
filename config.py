@@ -1,10 +1,10 @@
-import configparser
-import os
+from configparser import ConfigParser
+from os import getenv
 from PyQt6.QtGui import QFont
 
 class Config:
     def __init__(self, config_file='config.ini'):
-        self.cfg = configparser.ConfigParser()
+        self.cfg = ConfigParser()
         self.cfg.read(config_file)
         self.load_settings()
 
@@ -25,7 +25,7 @@ class Config:
         self.FONT_FAMILY = self.cfg["UI"]["FONT_FAMILY"]
         self.FONT_SIZE = self.cfg.getint("UI", "FONT_SIZE")
         self.DEFAULT_FONT = QFont(self.FONT_FAMILY, self.FONT_SIZE)
-        self.api_key = os.getenv("OPENAI_API_KEY")
+        self.api_key = self.get_api_key()
         self.BTN_WIDTH = self.cfg.getint("UI", "BTN_WIDTH")
         self.TUTOR_INPUT_HT = self.cfg.getint("UI", "TUTOR_INPUT_HT")
         self.USER_INPUT_HT = self.cfg.getint("UI", "USER_INPUT_HT")
@@ -33,3 +33,9 @@ class Config:
         self.ASST_FONT_FAMILY = self.cfg["UI"]["ASST_FONT_FAMILY"]
         self.ASST_FONT_SIZE = self.cfg.getint("UI", "ASST_FONT_SIZE")
         self.ASST_FONT = QFont(self.ASST_FONT_FAMILY, self.ASST_FONT_SIZE)
+
+    def get_api_key(self):
+        api_key = getenv("OPENAI_API_KEY")
+        if not api_key:
+            raise ValueError("API key not found in environment variables.")
+        return api_key

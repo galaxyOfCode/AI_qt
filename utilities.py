@@ -1,7 +1,3 @@
-from config import Config
-
-config = Config()
-
 
 def get_model_names(client, option) -> str:
     """List either the GPT models, or all models available through the API"""
@@ -20,8 +16,9 @@ def get_model_names(client, option) -> str:
     return header + content
 
 
-def get_settings() -> str:
+def get_settings(config) -> str:
     """ Print all hardcoded 'Magic Numbers' """
+    
     settings = {
         "GPT3_MODEL:": config.GPT3_MODEL,
         "GPT4_MODEL:": config.GPT4_MODEL,

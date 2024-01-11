@@ -2,9 +2,9 @@ import sys
 from openai import OpenAI
 from PyQt6.QtWidgets import QApplication, QWidget, QGridLayout, QFileDialog
 from chat import chat
-from code_review import code_review
+from reviewer import code_review
 from image import vision, image
-from ui_components import MainFrame, ButtonFrame, RadioFrame
+from frames import MainFrame, ButtonFrame, RadioFrame
 from utilities import get_model_names, get_settings
 from voice import tts, whisper
 from config import Config
@@ -46,12 +46,14 @@ class MainWindow(QWidget):
 
     def no_prompt(self, box) -> None:
         """Error message when no user prompt detected"""
+
         self.mainframe.asst_resp.setPlainText(
             f"Please enter a prompt in the '{box}:' box")
         self.buttonframe.enter_btn.setEnabled(True)
 
     def is_user_input_required(self) -> bool:
         """ Is text field required for the selected radio button"""
+
         checked_buttons = ["Chat 3.5", "Chat 4.0", "Tutor 3.5",
                            "Tutor 4.0", "Image Gen", "Text-to-Speech"]
         rb = self.radioframe.get_checked_radio_button()
@@ -59,16 +61,19 @@ class MainWindow(QWidget):
 
     def is_tutor_input_required(self) -> bool:
         """ Is text field required for the selected radio button"""
+
         rb = self.radioframe.get_checked_radio_button()
         return rb == "Tutor 3.5" or rb == "Tutor 4.0"
 
     def get_file_name(self) -> str:
         """ Gets a file name to pass along to one of the openAI functions """
+
         file = QFileDialog.getOpenFileName(None, "Select a File")
         return "" if file == "" else file[0]
 
     def set_response(self, content) -> None:
         """Implement setting the response in the UI"""
+
         rb = self.radioframe.get_checked_radio_button()
         if rb == "Image Gen":
             self.mainframe.asst_resp.setHtml(
@@ -79,8 +84,8 @@ class MainWindow(QWidget):
 
     def on_enter_click(self) -> None:
         """Execute function associated with selected radio button"""
+
         self.buttonframe.enter_btn.setEnabled(False)
-        self.mainframe.asst_resp.setPlainText("Processing . . .")
         text = self.mainframe.user_input.toPlainText()
         tutor = self.mainframe.tutor_input.toPlainText()
 
@@ -91,6 +96,8 @@ class MainWindow(QWidget):
         if not tutor and self.is_tutor_input_required():
             self.no_prompt("Tutor")
             return
+
+        self.mainframe.asst_resp.setPlainText("Processing . . .")
 
         action_mapping = {
             self.radioframe.radio_buttons[0]: lambda: chat(self.client, config.GPT3_MODEL, config.CHAT_TEMP, config.FREQ_PENALTY, 1, text),
@@ -104,7 +111,7 @@ class MainWindow(QWidget):
             self.radioframe.radio_buttons[8]: lambda: tts(self.client, config.TTS_MODEL, config.TTS_VOICE, text),
             self.radioframe.radio_buttons[9]: lambda: get_model_names(self.client, 1),
             self.radioframe.radio_buttons[10]: lambda: get_model_names(self.client, 0),
-            self.radioframe.radio_buttons[11]: lambda: get_settings(),
+            self.radioframe.radio_buttons[11]: lambda: get_settings(config),
         }
 
         for rb, action in action_mapping.items():
@@ -121,7 +128,7 @@ def main():
     app = QApplication(sys.argv)
     mw = MainWindow()
     mw.show()
-    sys.exit(app.exec())
+    exit(app.exec())
 
 
 if __name__ == "__main__":

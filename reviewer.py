@@ -1,15 +1,16 @@
 import openai
 import pyperclip
-import errors
+from errors import handle_openai_errors, handle_file_errors
 
 
 def code_review(client, model, file_path) -> str:
-    '''
+    """
     Reviews a code file.
     
     Allows the user to select a file for openAI to review the code for
     style, performance, readability, and maintainability.  
-    '''
+    """
+    
     try:
         with open(file_path, "r") as file:
             content = file.read()
@@ -24,11 +25,11 @@ def code_review(client, model, file_path) -> str:
                     messages=messages
                 )
             except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
-                content = errors.handle_openai_errors(e)
+                content = handle_openai_errors(e)
                 return content
             content = res.choices[0].message.content
             pyperclip.copy(content)
             return content
     except (FileNotFoundError, PermissionError, OSError) as e:
-        content = errors.handle_file_errors(e)
+        content = handle_file_errors(e)
         return content
