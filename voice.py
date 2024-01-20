@@ -4,12 +4,13 @@ from PyQt6.QtWidgets import QFileDialog
 from errors import handle_file_errors, handle_openai_errors
 
 
-def whisper(client, model, choice) -> str:
+def speech_to_text(client, model, choice) -> str:
     """
     Transcribes a voice file to text
 
     This will take an audio file and create and transcribe a text file from the audio source. The transcription will appear as a text response from the assistant.  It will be copied to the clipboard.
     """
+    
     try:
         with open(choice, "rb") as audio_file:
             content = client.audio.transcriptions.create(
@@ -27,12 +28,13 @@ def whisper(client, model, choice) -> str:
         return content
 
 
-def tts(client, model, voice, text) -> str:
+def text_to_speech(client, model, voice, text) -> str:
     """
     Text to speech
 
     This will take text from a user prompt and create an audio file using a specified voice (TTS_VOICE). The new file will default to 'speech.mp3' and will be saved to the Desktop.
     """
+
     try:
         response = client.audio.speech.create(
             model=model,

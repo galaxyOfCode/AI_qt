@@ -22,17 +22,14 @@ class Config:
         self.TTS_MODEL = self.cfg["OPENAI"]["TTS_MODEL"]
         self.TTS_VOICE = self.cfg["OPENAI"]["TTS_VOICE"]
         self.MAX_TOKENS = self.cfg.getint("OPENAI", "MAX_TOKENS")
-        self.FONT_FAMILY = self.cfg["UI"]["FONT_FAMILY"]
-        self.FONT_SIZE = self.cfg.getint("UI", "FONT_SIZE")
-        self.DEFAULT_FONT = QFont(self.FONT_FAMILY, self.FONT_SIZE)
         self.api_key = self.get_api_key()
-        self.BTN_WIDTH = self.cfg.getint("UI", "BTN_WIDTH")
-        self.TUTOR_INPUT_HT = self.cfg.getint("UI", "TUTOR_INPUT_HT")
-        self.USER_INPUT_HT = self.cfg.getint("UI", "USER_INPUT_HT")
-        self.ASST_RESP_HT = self.cfg.getint("UI", "ASST_RESP_HT")
-        self.ASST_FONT_FAMILY = self.cfg["UI"]["ASST_FONT_FAMILY"]
-        self.ASST_FONT_SIZE = self.cfg.getint("UI", "ASST_FONT_SIZE")
-        self.ASST_FONT = QFont(self.ASST_FONT_FAMILY, self.ASST_FONT_SIZE)
+        self.BTN_WIDTH = 80
+        self.TUTOR_INPUT_HT = 30
+        self.USER_INPUT_HT = 100
+        self.ASST_RESP_HT = 300
+        self.ASST_FONT = QFont("Menlo", 13)
+        self.DEFAULT_FONT = QFont("Arial", 14)
+        self.help_file = "help.txt"
 
     def get_api_key(self):
         api_key = getenv("OPENAI_API_KEY")

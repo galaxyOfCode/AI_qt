@@ -1,5 +1,5 @@
-from PyQt6.QtWidgets import (
-    QTextEdit, QFrame, QVBoxLayout, QRadioButton, QPushButton, QLabel)
+from PyQt6.QtWidgets import (QTextEdit, QFrame, QVBoxLayout,
+                             QRadioButton, QPushButton, QLabel)
 from PyQt6.QtCore import QCoreApplication
 from config import Config
 
@@ -16,19 +16,18 @@ class RadioFrame(QFrame):
     def init_ui(self) -> None:
         self.radio_layout = QVBoxLayout(self)
         self.radio_buttons = []  # List to store radio buttons
+        self.radio_button_labels = ["Chat 3.5", "Chat 4.0", "Tutor 3.5", "Tutor 4.0",
+                                    "Code Review", "Image Gen", "Vision", "Speech-to-Text", "Text-to-Speech", "List GPT Models", "List All Models", "List Settings"]
 
-        self.radio_button_labels = ["Chat 3.5", "Chat 4.0", "Tutor 3.5", "Tutor 4.0", "Code Review", "Image Gen",
-                                    "Vision", "Speech-to-Text", "Text-to-Speech", "List GPT Models", "List All Models", "List Settings"]
+    def layout_ui(self) -> None:
+        self.radio_buttons[1].setChecked(True)
+        self.setLayout(self.radio_layout)
 
     def add_widgets(self) -> None:
         for label in self.radio_button_labels:
             rb = QRadioButton(label)
             self.radio_buttons.append(rb)
             self.radio_layout.addWidget(rb)
-
-    def layout_ui(self) -> None:
-        self.radio_buttons[1].setChecked(True)
-        self.setLayout(self.radio_layout)
 
     def get_checked_radio_button(self):
         for rb in self.radio_buttons:
@@ -43,7 +42,7 @@ class ButtonFrame(QFrame):
         self.mainframe = mainframe
         self.init_ui()
         self.layout_ui()
-        self.ui_properties()
+        self.set_ui_properties()
         self.setup_connections()
 
     def init_ui(self) -> None:
@@ -53,7 +52,7 @@ class ButtonFrame(QFrame):
         self.quit_btn = QPushButton("Quit")
         self.enter_btn = QPushButton("Enter")
 
-    def ui_properties(self) -> None:
+    def set_ui_properties(self) -> None:
         self.clear_btn.setFixedWidth(config.BTN_WIDTH)
         self.enter_btn.setFixedWidth(config.BTN_WIDTH)
         self.quit_btn.setFixedWidth(config.BTN_WIDTH)
@@ -73,7 +72,7 @@ class ButtonFrame(QFrame):
 
     def on_quit_click(self) -> None:
         """ Exit program """
-        
+
         QCoreApplication.quit()
 
 
@@ -83,7 +82,7 @@ class MainFrame(QFrame):
         self.default_font_bold = config.DEFAULT_FONT
         self.default_font_bold.setBold(True)
         self.init_ui()
-        self.ui_properties()
+        self.set_ui_properties()
         self.add_widgets()
 
     def init_ui(self) -> None:
@@ -95,7 +94,7 @@ class MainFrame(QFrame):
         self.asst_lbl = QLabel("Assistant:")
         self.asst_resp = QTextEdit()
 
-    def ui_properties(self) -> None:
+    def set_ui_properties(self) -> None:
         self.tutor_lbl.setFont(self.default_font_bold)
         self.tutor_input.setFixedHeight(config.TUTOR_INPUT_HT)
         self.user_lbl.setFont(self.default_font_bold)
@@ -117,6 +116,7 @@ class MainFrame(QFrame):
 
     def on_clear_click(self) -> None:
         """ Clear all text boxes and reset radio button """
+
         self.user_input.clear()
         self.tutor_input.clear()
         self.asst_resp.clear()
@@ -124,6 +124,10 @@ class MainFrame(QFrame):
 
     def on_help_click(self) -> None:
         """Displays Help text"""
-        with open('help.txt') as file:
-            content = file.read()
+
+        try:
+            with open(config.help_file, 'r') as file:
+                content = file.read()
             self.asst_resp.setPlainText(content)
+        except FileNotFoundError:
+            self.asst_resp.setPlainText("Help file not found.")

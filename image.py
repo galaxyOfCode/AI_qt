@@ -1,10 +1,11 @@
 import openai
 import pyperclip
 from errors import (handle_openai_errors,
-                    handle_file_errors, handle_request_errors)
+                    handle_file_errors,
+                    handle_request_errors)
 
 
-def image(client, model, quality, text) -> str:
+def generate_image(client, model, quality, text) -> str:
     """
     Image generator
 
@@ -25,7 +26,7 @@ def image(client, model, quality, text) -> str:
         return content
 
 
-def vision(api_key, model, max_tokens, image_path) -> str:
+def describe_image(api_key, model, max_tokens, image_path) -> str:
     """The user can select an image and ask for a description"""
 
     import requests
@@ -64,7 +65,8 @@ def vision(api_key, model, max_tokens, image_path) -> str:
     }
     try:
         response = requests.post(
-            "https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
+            "https://api.openai.com/v1/chat/completions", headers=headers, json=payload
+        )
         data = response.json()
     except (HTTPError, Timeout, RequestException, Exception) as e:
         content = handle_request_errors(e)

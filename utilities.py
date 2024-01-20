@@ -7,7 +7,8 @@ def get_model_names(client, option) -> str:
     model_ids = [model.id for model in models_data]
     if option:
         model_ids = [
-            model_id for model_id in model_ids if model_id.startswith("gpt")]
+            model_id for model_id in model_ids if model_id.startswith("gpt")
+        ]
         header = "Current openAI GPT Models:\n\n"
     else:
         header = "Current openAI Models:\n\n"
@@ -18,7 +19,7 @@ def get_model_names(client, option) -> str:
 
 def get_settings(config) -> str:
     """ Print all hardcoded 'Magic Numbers' """
-    
+
     settings = {
         "GPT3_MODEL:": config.GPT3_MODEL,
         "GPT4_MODEL:": config.GPT4_MODEL,
