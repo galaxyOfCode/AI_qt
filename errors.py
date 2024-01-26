@@ -3,10 +3,11 @@ from requests.exceptions import HTTPError, Timeout, RequestException
 
 
 def handle_file_errors(exception) -> str:
+    content = None
     if isinstance(exception, FileNotFoundError):
-        content = ("Error: The file was not found.")
+        content = "Error: The file was not found."
     if isinstance(exception, PermissionError):
-        content = ("Error: Permission denied when trying to read the file.")
+        content = "Error: Permission denied when trying to read the file."
     if isinstance(exception, OSError):
         content = (
             "Error: An error occurred while reading from the file the file.")
@@ -14,6 +15,7 @@ def handle_file_errors(exception) -> str:
 
 
 def handle_openai_errors(exception) -> str:
+    content = None
     if isinstance(exception, openai.APIConnectionError):
         content = "The server could not be reached\n" + \
             str(exception.__cause__)
@@ -26,6 +28,7 @@ def handle_openai_errors(exception) -> str:
 
 
 def handle_request_errors(exception) -> str:
+    content = None
     if isinstance(exception, HTTPError):
         content = "An HTTP error occurred"
     if isinstance(exception, Timeout):

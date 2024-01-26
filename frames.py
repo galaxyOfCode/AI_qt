@@ -9,15 +9,13 @@ config = Config()
 class RadioFrame(QFrame):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.init_ui()
-        self.add_widgets()
-        self.layout_ui()
-
-    def init_ui(self) -> None:
         self.radio_layout = QVBoxLayout(self)
         self.radio_buttons = []  # List to store radio buttons
-        self.radio_button_labels = ["Chat 3.5", "Chat 4.0", "Tutor 3.5", "Tutor 4.0",
-                                    "Code Review", "Image Gen", "Vision", "Speech-to-Text", "Text-to-Speech", "List GPT Models", "List All Models", "List Settings"]
+        self.radio_button_labels = ["Chat 3.5", "Chat 4.0", "Tutor 3.5",
+                                    "Tutor 4.0", "Code Review", "Image Gen", "Vision", "Speech-to-Text", "Text-to-Speech",
+                                    "List GPT Models", "List All Models", "List Settings"]
+        self.add_widgets()
+        self.layout_ui()
 
     def layout_ui(self) -> None:
         self.radio_buttons[1].setChecked(True)
@@ -36,29 +34,30 @@ class RadioFrame(QFrame):
         return None
 
 
+# noinspection PyUnresolvedReferences
 class ButtonFrame(QFrame):
     def __init__(self, mainframe, parent=None):
         super().__init__(parent)
         self.mainframe = mainframe
-        self.init_ui()
-        self.layout_ui()
-        self.set_ui_properties()
-        self.setup_connections()
-
-    def init_ui(self) -> None:
         self.button_layout = QVBoxLayout()
+        self.about_btn = QPushButton("About")
         self.clear_btn = QPushButton("Clear")
         self.help_btn = QPushButton("Help")
         self.quit_btn = QPushButton("Quit")
         self.enter_btn = QPushButton("Enter")
+        self.set_ui_properties()
+        self.layout_ui()
+        self.setup_connections()
 
     def set_ui_properties(self) -> None:
+        self.about_btn.setFixedWidth(config.BTN_WIDTH)
         self.clear_btn.setFixedWidth(config.BTN_WIDTH)
         self.enter_btn.setFixedWidth(config.BTN_WIDTH)
         self.quit_btn.setFixedWidth(config.BTN_WIDTH)
         self.help_btn.setFixedWidth(config.BTN_WIDTH)
 
     def layout_ui(self) -> None:
+        self.button_layout.addWidget(self.about_btn)
         self.button_layout.addWidget(self.clear_btn)
         self.button_layout.addWidget(self.help_btn)
         self.button_layout.addWidget(self.quit_btn)
@@ -67,10 +66,12 @@ class ButtonFrame(QFrame):
 
     def setup_connections(self) -> None:
         self.quit_btn.clicked.connect(self.on_quit_click)
+        self.about_btn.clicked.connect(self.mainframe.on_about_click)
         self.clear_btn.clicked.connect(self.mainframe.on_clear_click)
         self.help_btn.clicked.connect(self.mainframe.on_help_click)
 
-    def on_quit_click(self) -> None:
+    @staticmethod
+    def on_quit_click() -> None:
         """ Exit program """
 
         QCoreApplication.quit()
@@ -81,11 +82,6 @@ class MainFrame(QFrame):
         super().__init__(parent)
         self.default_font_bold = config.DEFAULT_FONT
         self.default_font_bold.setBold(True)
-        self.init_ui()
-        self.set_ui_properties()
-        self.add_widgets()
-
-    def init_ui(self) -> None:
         self.main_layout = QVBoxLayout()
         self.tutor_lbl = QLabel("Tutor:")
         self.tutor_input = QTextEdit()
@@ -93,6 +89,8 @@ class MainFrame(QFrame):
         self.user_input = QTextEdit()
         self.asst_lbl = QLabel("Assistant:")
         self.asst_resp = QTextEdit()
+        self.set_ui_properties()
+        self.add_widgets()
 
     def set_ui_properties(self) -> None:
         self.tutor_lbl.setFont(self.default_font_bold)
@@ -131,3 +129,12 @@ class MainFrame(QFrame):
             self.asst_resp.setPlainText(content)
         except FileNotFoundError:
             self.asst_resp.setPlainText("Help file not found.")
+
+    def on_about_click(self) -> None:
+        """Displays About text (Version Number)"""
+
+        about_content = "AI Assistant created by Jeff Hall"
+        self.user_input.clear()
+        self.tutor_input.clear()
+        self.asst_resp.clear()
+        self.asst_resp.setPlainText(f"{about_content}\n{config.version}")

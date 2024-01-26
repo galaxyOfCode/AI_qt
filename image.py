@@ -1,5 +1,4 @@
 import openai
-import pyperclip
 from errors import (handle_openai_errors,
                     handle_file_errors,
                     handle_request_errors)
@@ -9,17 +8,18 @@ def generate_image(client, model, quality, text) -> str:
     """
     Image generator
 
-    This will allow the user to input a prompt and openAI will create an image based on the 'text''.  'model' is the image model that will be used (ie Dall-e-3). 'size' is the size of the image (ie 1024x1024).  Number of images is set to 1.
+    This will allow the user to input a prompt and openAI will create an image based on the 'text''.  'model' is
+    the image model that will be used (ie Dall-e-3). 'size' is the size of the image (ie 1024x1024).  Number of
+    images is set to 1.
     """
 
     try:
-        res = client.images.generate(
+        response = client.images.generate(
             model=model,
             prompt=text,
             quality=quality,
         )
-        image_url = res.data[0].url
-        pyperclip.copy(image_url)
+        image_url = response.data[0].url
         return image_url
     except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
         content = handle_openai_errors(e)
@@ -73,8 +73,7 @@ def describe_image(api_key, model, max_tokens, image_path) -> str:
         return content
     try:
         content = data["choices"][0]["message"]["content"]
-        pyperclip.copy(content)
         return content
-    except:
+    except ValueError:
         error = data["error"]["message"]
         return error

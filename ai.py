@@ -1,13 +1,14 @@
-import sys
+from config import Config
 from openai import OpenAI
-from PyQt6.QtWidgets import QApplication, QWidget, QGridLayout, QFileDialog
+from PyQt6.QtWidgets import (QApplication, QWidget,
+                             QGridLayout, QFileDialog)
+
 from chat import chat
-from reviewer import code_review
-from image import describe_image, generate_image
 from frames import MainFrame, ButtonFrame, RadioFrame
+from image import describe_image, generate_image
+from reviewer import code_review
 from utilities import get_model_names, get_settings
 from voice import text_to_speech, speech_to_text
-from config import Config
 
 config = Config()
 
@@ -45,14 +46,14 @@ class MainWindow(QWidget):
         self.mainframe.user_input.setFocus()
 
     def no_prompt(self, box) -> None:
-        """Error message when no user prompt detected"""
+        """Error message when no required user or tutor prompt detected"""
 
         self.mainframe.asst_resp.setPlainText(
             f"Please enter a prompt in the '{box}:' box")
         self.buttonframe.enter_btn.setEnabled(True)
 
     def is_user_input_required(self) -> bool:
-        """ Is text field required for the selected radio button"""
+        """ Is a text field required for the selected radio button"""
 
         checked_buttons = ["Chat 3.5", "Chat 4.0", "Tutor 3.5",
                            "Tutor 4.0", "Image Gen", "Text-to-Speech"]
@@ -60,12 +61,13 @@ class MainWindow(QWidget):
         return button in checked_buttons
 
     def is_tutor_input_required(self) -> bool:
-        """ Is text field required for the selected radio button"""
+        """ Is a text field required for the selected radio button"""
 
         button = self.radioframe.get_checked_radio_button()
         return button == "Tutor 3.5" or button == "Tutor 4.0"
 
-    def get_file_name(self) -> str:
+    @staticmethod
+    def get_file_name() -> str:
         """ Gets a file name to pass along to one of the openAI functions """
 
         file = QFileDialog.getOpenFileName(None, "Select a File")
@@ -86,6 +88,8 @@ class MainWindow(QWidget):
     def on_enter_click(self) -> None:
         """Execute function associated with selected radio button"""
 
+        content = ""
+        self.mainframe.asst_resp.setPlainText("Processing . . .")
         self.buttonframe.enter_btn.setEnabled(False)
         user = self.mainframe.user_input.toPlainText()
         tutor = self.mainframe.tutor_input.toPlainText()
@@ -99,22 +103,35 @@ class MainWindow(QWidget):
             return
 
         action_mapping = {
-            self.radioframe.radio_buttons[0]: lambda: chat(self.client, config.GPT3_MODEL, config.CHAT_TEMP, config.FREQ_PENALTY, 1, user),
-            self.radioframe.radio_buttons[1]: lambda: chat(self.client, config.GPT4_MODEL, config.CHAT_TEMP, config.FREQ_PENALTY, 1, user),
-            self.radioframe.radio_buttons[2]: lambda: chat(self.client, config.GPT3_MODEL, config.TUTOR_TEMP, config.FREQ_PENALTY, 0, user, tutor),
-            self.radioframe.radio_buttons[3]: lambda: chat(self.client, config.GPT4_MODEL, config.TUTOR_TEMP, config.FREQ_PENALTY, 0, user, tutor),
-            self.radioframe.radio_buttons[4]: lambda: code_review(self.client, config.GPT4_MODEL, self.get_file_name()),
-            self.radioframe.radio_buttons[5]: lambda: generate_image(self.client, config.IMG_MODEL, config.QUALITY, user),
-            self.radioframe.radio_buttons[6]: lambda: describe_image(config.api_key, config.VISION_MODEL, config.MAX_TOKENS, self.get_file_name()),
-            self.radioframe.radio_buttons[7]: lambda: speech_to_text(self.client, config.WHISPER_MODEL, self.get_file_name()),
-            self.radioframe.radio_buttons[8]: lambda: text_to_speech(self.client, config.TTS_MODEL, config.TTS_VOICE, user),
+            self.radioframe.radio_buttons[0]: lambda: chat(self.client, config.GPT3_MODEL,
+                                                           config.CHAT_TEMP, config.FREQ_PENALTY,
+                                                           1, user),
+            self.radioframe.radio_buttons[1]: lambda: chat(self.client, config.GPT4_MODEL,
+                                                           config.CHAT_TEMP, config.FREQ_PENALTY,
+                                                           1, user),
+            self.radioframe.radio_buttons[2]: lambda: chat(self.client, config.GPT3_MODEL,
+                                                           config.TUTOR_TEMP, config.FREQ_PENALTY,
+                                                           0, user, tutor),
+            self.radioframe.radio_buttons[3]: lambda: chat(self.client, config.GPT4_MODEL,
+                                                           config.TUTOR_TEMP, config.FREQ_PENALTY,
+                                                           0, user, tutor),
+            self.radioframe.radio_buttons[4]: lambda: code_review(self.client, config.GPT4_MODEL,
+                                                                  self.get_file_name()),
+            self.radioframe.radio_buttons[5]: lambda: generate_image(self.client, config.IMG_MODEL,
+                                                                     config.QUALITY, user),
+            self.radioframe.radio_buttons[6]: lambda: describe_image(config.api_key, config.VISION_MODEL,
+                                                                     config.MAX_TOKENS, self.get_file_name()),
+            self.radioframe.radio_buttons[7]: lambda: speech_to_text(self.client, config.WHISPER_MODEL,
+                                                                     self.get_file_name()),
+            self.radioframe.radio_buttons[8]: lambda: text_to_speech(self.client, config.TTS_MODEL,
+                                                                     config.TTS_VOICE, user,
+                                                                     config.speech_file_path),
             self.radioframe.radio_buttons[9]: lambda: get_model_names(self.client, 1),
             self.radioframe.radio_buttons[10]: lambda: get_model_names(self.client, 0),
             self.radioframe.radio_buttons[11]: lambda: get_settings(config),
         }
 
         for button, action in action_mapping.items():
-            self.mainframe.asst_resp.setPlainText("Processing . . .")
             if button.isChecked():
                 content = action()
                 break
@@ -125,7 +142,7 @@ class MainWindow(QWidget):
 
 
 def main():
-    app = QApplication(sys.argv)
+    app = QApplication([])
     mw = MainWindow()
     mw.show()
     exit(app.exec())

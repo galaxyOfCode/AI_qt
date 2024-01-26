@@ -1,5 +1,4 @@
 import openai
-import pyperclip
 from PyQt6.QtWidgets import QFileDialog
 from errors import handle_file_errors, handle_openai_errors
 
@@ -8,7 +7,8 @@ def speech_to_text(client, model, choice) -> str:
     """
     Transcribes a voice file to text
 
-    This will take an audio file and create and transcribe a text file from the audio source. The transcription will appear as a text response from the assistant.  It will be copied to the clipboard.
+    This will take an audio file and create and transcribe a text file from the audio source. The transcription
+    will appear as a text response from the assistant.  It will be copied to the clipboard.
     """
     
     try:
@@ -18,7 +18,6 @@ def speech_to_text(client, model, choice) -> str:
                 file=audio_file,
                 response_format="text"
             )
-            pyperclip.copy(content)
             return content
     except (FileNotFoundError, PermissionError, OSError) as e:
         content = handle_file_errors(e)
@@ -28,11 +27,12 @@ def speech_to_text(client, model, choice) -> str:
         return content
 
 
-def text_to_speech(client, model, voice, text) -> str:
+def text_to_speech(client, model, voice, text, path) -> str:
     """
     Text to speech
 
-    This will take text from a user prompt and create an audio file using a specified voice (TTS_VOICE). The new file will default to 'speech.mp3' and will be saved to the Desktop.
+    This will take text from a user prompt and create an audio file using a specified voice (TTS_VOICE).
+    The new file will default to 'speech.mp3' and will be saved to the Desktop.
     """
 
     try:
@@ -44,7 +44,7 @@ def text_to_speech(client, model, voice, text) -> str:
         file_name, _ = QFileDialog.getSaveFileName(
             None,
             "Save File",
-            "/Users/jeffmacair/Desktop/speech.mp3",
+            path,
             "MP3 Files (*.mp3)",
         )
         if file_name:

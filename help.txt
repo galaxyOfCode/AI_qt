@@ -18,10 +18,24 @@ Vision: Leave all text boxes empty. You will be prompted for an image file (.jpg
                
 Speech-to-Text: Leave all text boxes empty. You will be prompted for an audio file (.mp3). A transcript of the audio file will be displayed in 'Assistant'.
 
-Text-to-Speech: Enter your text in the 'User:' box. You will be asked to save a file that will contain an audio recording of the text entered (using the voice stated in the TTS_VOICE setting.
+Text-to-Speech: Enter your text in the 'User:' box. You will be asked to save a file that will contain an audio recording of the text entered (using the voice stated in the TTS_VOICE setting.)
 
 List GPT: Displays the current GPT models available through the openAI API.
 
-List All: Displays all of the models available through the openAI API.
+List All: Displays all the models available through the openAI API.
 
 List Settings: Displays the current OpenAI settings used in this app. These can be edited by changing the 'config.ini' file.
+
+Other Buttons:
+About: Displays Version number and date.
+
+Clear: Clears all text boxes and selects the default radio button (Chat 4.0).
+
+Help: Displays this text.
+
+Quit: Ends program.
+
+Enter: Accepts input and attempts to generate a response.  Will respond with error codes if something is not correct.
+
+
+

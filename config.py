@@ -2,13 +2,19 @@ from configparser import ConfigParser
 from os import getenv
 from PyQt6.QtGui import QFont
 
+
+def get_api_key():
+    api_key = getenv("OPENAI_API_KEY")
+    if not api_key:
+        raise ValueError("API key not found in environment variables.")
+    return api_key
+
+
 class Config:
     def __init__(self, config_file='config.ini'):
         self.cfg = ConfigParser()
         self.cfg.read(config_file)
-        self.load_settings()
 
-    def load_settings(self):
         self.GPT3_MODEL = self.cfg["OPENAI"]["GPT3_MODEL"]
         self.GPT4_MODEL = self.cfg["OPENAI"]["GPT4_MODEL"]
         self.CODE_REVIEW_MODEL = self.cfg["OPENAI"]["GPT4_MODEL"]
@@ -22,7 +28,9 @@ class Config:
         self.TTS_MODEL = self.cfg["OPENAI"]["TTS_MODEL"]
         self.TTS_VOICE = self.cfg["OPENAI"]["TTS_VOICE"]
         self.MAX_TOKENS = self.cfg.getint("OPENAI", "MAX_TOKENS")
-        self.api_key = self.get_api_key()
+        self.speech_file_path = self.cfg["PATH"]["speech_file_path"]
+        self.version = self.cfg["OTHER"]["version"]
+        self.api_key = get_api_key()
         self.BTN_WIDTH = 80
         self.TUTOR_INPUT_HT = 30
         self.USER_INPUT_HT = 100
@@ -30,9 +38,3 @@ class Config:
         self.ASST_FONT = QFont("Menlo", 13)
         self.DEFAULT_FONT = QFont("Arial", 14)
         self.help_file = "help.txt"
-
-    def get_api_key(self):
-        api_key = getenv("OPENAI_API_KEY")
-        if not api_key:
-            raise ValueError("API key not found in environment variables.")
-        return api_key
