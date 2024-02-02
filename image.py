@@ -8,8 +8,8 @@ def generate_image(client, model, quality, text) -> str:
     """
     Image generator
 
-    This will allow the user to input a prompt and openAI will create an image based on the 'text''.  'model' is
-    the image model that will be used (ie Dall-e-3). 'size' is the size of the image (ie 1024x1024).  Number of
+    This will allow the user to input a prompt and openAI will create an image based on the 'text';  'model' is
+    the image model that will be used (ie Dall-e-3); 'size' is the size of the image (ie 1024x1024);  number of
     images is set to 1.
     """
 
@@ -65,8 +65,7 @@ def describe_image(api_key, model, max_tokens, image_path) -> str:
     }
     try:
         response = requests.post(
-            "https://api.openai.com/v1/chat/completions", headers=headers, json=payload
-        )
+            "https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
         data = response.json()
     except (HTTPError, Timeout, RequestException, Exception) as e:
         content = handle_request_errors(e)

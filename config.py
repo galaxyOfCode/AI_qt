@@ -11,13 +11,12 @@ def get_api_key():
 
 
 class Config:
-    def __init__(self, config_file='config.ini'):
+    def __init__(self, config_file="config.ini"):
         self.cfg = ConfigParser()
         self.cfg.read(config_file)
 
         self.GPT3_MODEL = self.cfg["OPENAI"]["GPT3_MODEL"]
         self.GPT4_MODEL = self.cfg["OPENAI"]["GPT4_MODEL"]
-        self.CODE_REVIEW_MODEL = self.cfg["OPENAI"]["GPT4_MODEL"]
         self.FREQ_PENALTY = self.cfg.getfloat("OPENAI", "FREQ_PENALTY")
         self.CHAT_TEMP = self.cfg.getfloat("OPENAI", "CHAT_TEMP")
         self.TUTOR_TEMP = self.cfg.getfloat("OPENAI", "TUTOR_TEMP")

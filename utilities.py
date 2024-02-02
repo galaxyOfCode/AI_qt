@@ -23,7 +23,7 @@ def get_settings(config) -> str:
     settings = {
         "GPT3_MODEL:": config.GPT3_MODEL,
         "GPT4_MODEL:": config.GPT4_MODEL,
-        "CODE_REVIEW_MODEL:": config.CODE_REVIEW_MODEL,
+        "CODE_REVIEW_MODEL:": config.GPT4_MODEL,
         "IMG_MODEL:": config.IMG_MODEL,
         "QUALITY:": config.QUALITY,
         "VISION_MODEL:": config.VISION_MODEL,

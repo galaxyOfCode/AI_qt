@@ -2,7 +2,7 @@ import openai
 from errors import handle_openai_errors
 
 
-def chat(client, model, temperature, frequency_penalty, option, text, tutor="") -> str:
+def chat(client, model, temperature, frequency_penalty, option, user_text, tutor_text="") -> str:
     """
     This is an openai chatbot.  
 
@@ -19,19 +19,19 @@ def chat(client, model, temperature, frequency_penalty, option, text, tutor="") 
                               "your answer.")
             messages = [{"role": "system", "content": initial_prompt}]
         else:
-            initial_prompt = (f"You are a world class expert in the field of {tutor}. You will answer the users "
+            initial_prompt = (f"You are a world class expert in the field of {tutor_text}. You will answer the users "
                               f"questions with enough detail that the user will be able to understand how you arrived "
                               f"at the answer.  Your answers can include examples if that will help the user better "
                               f"understand your answer.")
             messages = [{"role": "system", "content": initial_prompt}]
-        messages.append({"role": "user", "content": text})
+        messages.append({"role": "user", "content": user_text})
 
         response = client.chat.completions.create(
             model=model,
             messages=messages,
             temperature=temperature,
-            frequency_penalty=frequency_penalty
-        )
+            frequency_penalty=frequency_penalty)
+
         content = response.choices[0].message.content
         return content
     except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:

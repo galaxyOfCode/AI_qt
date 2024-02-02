@@ -10,7 +10,7 @@ def speech_to_text(client, model, choice) -> str:
     This will take an audio file and create and transcribe a text file from the audio source. The transcription
     will appear as a text response from the assistant.  It will be copied to the clipboard.
     """
-    
+
     try:
         with open(choice, "rb") as audio_file:
             content = client.audio.transcriptions.create(
