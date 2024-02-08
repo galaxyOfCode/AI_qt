@@ -7,8 +7,7 @@ def chat(client, model, temperature, frequency_penalty, option, user_text, tutor
     This is an openai chatbot.  
 
     The options are model (gpt-3.5-turbo-1106, etc.);  temperature; freqency_penalty and option
-    (1 for general chat and 0 for specific tutoring). All resonses will be displayed and copied
-    to the clipboard.
+    (1 for general chat and 0 for specific tutoring). All resonses will be displayed and copied to the clipboard.
     """
 
     try:

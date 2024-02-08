@@ -16,8 +16,7 @@ def speech_to_text(client, model, choice) -> str:
             content = client.audio.transcriptions.create(
                 model=model,
                 file=audio_file,
-                response_format="text"
-            )
+                response_format="text")
             return content
     except (FileNotFoundError, PermissionError, OSError) as e:
         content = handle_file_errors(e)
@@ -39,14 +38,12 @@ def text_to_speech(client, model, voice, text, path) -> str:
         response = client.audio.speech.create(
             model=model,
             voice=voice,
-            input=text
-        )
+            input=text)
         file_name, _ = QFileDialog.getSaveFileName(
             None,
             "Save File",
             path,
-            "MP3 Files (*.mp3)",
-        )
+            "MP3 Files (*.mp3)",)
         if file_name:
             response.stream_to_file(file_name)
             content = f"{file_name} succesfully created"

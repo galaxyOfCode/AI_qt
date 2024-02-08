@@ -20,9 +20,11 @@ Speech-to-Text: Leave all text boxes empty. You will be prompted for an audio fi
 
 Text-to-Speech: Enter your text in the 'User:' box. You will be asked to save a file that will contain an audio recording of the text entered (using the voice stated in the TTS_VOICE setting.)
 
-List GPT: Displays the current GPT models available through the openAI API.
+List GPT Models: Displays the current GPT models available through the openAI API.
 
-List All: Displays all the models available through the openAI API.
+List All Models: Displays all the models available through the openAI API.
+
+Update API: Will check for an update to the 'openai' python package. If there is a new version available, it will download and install it.
 
 List Settings: Displays the current OpenAI settings used in this app. These can be edited by changing the 'config.ini' file.
 
@@ -35,7 +37,7 @@ Help: Displays this text.
 
 Quit: Ends program.
 
-Enter: Accepts input and attempts to generate a response.  Will respond with error codes if something is not correct.
+Enter: Accepts input and attempts to generate a response.  Will respond with error messages if something is not correct.
 
 
 

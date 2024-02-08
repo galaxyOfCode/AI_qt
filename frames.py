@@ -11,9 +11,11 @@ class RadioFrame(QFrame):
         super().__init__(parent)
         self.radio_layout = QVBoxLayout(self)
         self.radio_buttons = []  # List to store radio buttons
-        self.radio_button_labels = ["Chat 3.5", "Chat 4.0", "Tutor 3.5", "Tutor 4.0", "Code Review",
-                                    "Image Gen", "Vision", "Speech-to-Text", "Text-to-Speech",
-                                    "List GPT Models", "List All Models", "List Settings"]
+        self.radio_button_labels = ["Chat 3.5", "Chat 4.0", "Tutor 3.5",
+                                    "Tutor 4.0", "Code Review",
+                                    "Image Gen", "Vision", "Speech-to-Text", "Text-to-Speech", "List GPT Models",
+                                    "List All Models", "Update API", 
+                                    "List Settings"]
         self.add_widgets()
         self.layout_ui()
 
@@ -70,8 +72,7 @@ class ButtonFrame(QFrame):
         self.clear_btn.clicked.connect(self.mainframe.on_clear_click)
         self.help_btn.clicked.connect(self.mainframe.on_help_click)
 
-    @staticmethod
-    def on_quit_click() -> None:
+    def on_quit_click(self) -> None:
         """ Exit program """
 
         QCoreApplication.quit()

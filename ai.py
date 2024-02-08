@@ -7,7 +7,7 @@ from chat import chat
 from frames import MainFrame, ButtonFrame, RadioFrame
 from image import describe_image, generate_image
 from reviewer import code_review
-from utilities import get_model_names, get_settings
+from utilities import get_model_names, get_settings, update
 from voice import text_to_speech, speech_to_text
 
 config = Config()
@@ -138,7 +138,8 @@ class MainWindow(QWidget):
                                                                       1),
             self.radioframe.radio_buttons[10]: lambda: get_model_names(self.client,
                                                                        0),
-            self.radioframe.radio_buttons[11]: lambda: get_settings(config),
+            self.radioframe.radio_buttons[11]: lambda: update(),
+            self.radioframe.radio_buttons[12]: lambda: get_settings(config),
         }
 
         for button, action in action_mapping.items():

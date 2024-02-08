@@ -20,13 +20,11 @@ def code_review(client, model, file_path) -> str:
                               "include line numbers to which you are referring.")
             messages = [
                 {"role": "system", "content": initial_prompt},
-                {"role": "user", "content": f"Code review the following file: {content}"}
-            ]
+                {"role": "user", "content": f"Code review the following file: {content}"}]
             try:
                 response = client.chat.completions.create(
                     model=model,
-                    messages=messages
-                )
+                    messages=messages)
             except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
                 content = handle_openai_errors(e)
                 return content

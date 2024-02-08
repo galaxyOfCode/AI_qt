@@ -17,8 +17,7 @@ def generate_image(client, model, quality, text) -> str:
         response = client.images.generate(
             model=model,
             prompt=text,
-            quality=quality,
-        )
+            quality=quality,)
         image_url = response.data[0].url
         return image_url
     except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
@@ -40,29 +39,15 @@ def describe_image(api_key, model, max_tokens, image_path) -> str:
         return content
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer {api_key}"
-    }
+        "Authorization": f"Bearer {api_key}"}
     payload = {
         "model": model,
-        "messages": [
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "text",
-                        "text": "What's in this image?"
-                    },
-                    {
-                        "type": "image_url",
-                        "image_url": {
-                            "url": f"data:image/png;base64,{base64_image}"
-                        }
-                    }
-                ]
-            }
-        ],
-        "max_tokens": max_tokens
-    }
+        "messages": [{"role": "user", "content": [{
+            "type": "text",
+            "text": "What's in this image?"}, {
+            "type": "image_url",
+            "image_url": {
+                "url": f"data:image/png;base64,{base64_image}"}}]}], "max_tokens": max_tokens}
     try:
         response = requests.post(
             "https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
