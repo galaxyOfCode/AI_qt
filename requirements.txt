@@ -1,0 +1,7 @@
+base64
+configparser
+errors
+os
+PyQt6
+requests
+subprocess

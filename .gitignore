@@ -2,3 +2,6 @@
 .dist
 *.png
 *.pyc
+*.iml
+*.xml
+.idea
