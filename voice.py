@@ -1,5 +1,6 @@
 import openai
 from PyQt6.QtWidgets import QFileDialog
+
 from errors import handle_file_errors, handle_openai_errors
 
 

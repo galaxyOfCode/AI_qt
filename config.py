@@ -28,6 +28,7 @@ class Config:
         self.TTS_VOICE = self.cfg["OPENAI"]["TTS_VOICE"]
         self.MAX_TOKENS = self.cfg.getint("OPENAI", "MAX_TOKENS")
         self.speech_file_path = self.cfg["PATH"]["speech_file_path"]
+        self.clipboard_path = self.cfg["PATH"]["clipboard_path"]
         self.version = self.cfg["OTHER"]["version"]
         self.api_key = get_api_key()
         self.BTN_WIDTH = 80
@@ -37,3 +38,7 @@ class Config:
         self.ASST_FONT = QFont("Menlo", 13)
         self.DEFAULT_FONT = QFont("Arial", 14)
         self.help_file = "help.txt"
+
+    def reload_config(self):
+        self.ASST_FONT = QFont("Menlo", 13)
+        self.DEFAULT_FONT = QFont("Arial", 14)

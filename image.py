@@ -1,4 +1,5 @@
 import openai
+
 from errors import (handle_openai_errors,
                     handle_file_errors,
                     handle_request_errors)

@@ -1,9 +1,9 @@
-from config import Config
 from openai import OpenAI
 from PyQt6.QtWidgets import (QApplication, QWidget,
                              QGridLayout, QFileDialog)
 
 from chat import chat
+from config import Config
 from frames import MainFrame, ButtonFrame, RadioFrame
 from image import describe_image, generate_image
 from reviewer import code_review
@@ -120,6 +120,7 @@ class MainWindow(QWidget):
                                                            0, user_text, tutor_text),
             self.radioframe.radio_buttons[4]: lambda: code_review(self.client,
                                                                   config.GPT4_MODEL,
+                                                                  config.TUTOR_TEMP,
                                                                   self.get_file_name()),
             self.radioframe.radio_buttons[5]: lambda: generate_image(self.client,
                                                                      config.IMG_MODEL,
