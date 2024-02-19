@@ -29,6 +29,8 @@ Update API: Will check for an update to the 'openai' python package. If there is
 List Settings: Displays the current OpenAI settings used in this app. These can be edited by changing the 'config.ini' file.
 
 Other Buttons:
+Save: Will Save the current 'Assistant' text as a .txt file
+
 About: Displays Version number and date.
 
 Clear: Clears all text boxes and selects the default radio button (Chat 4.0).
