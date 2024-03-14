@@ -10,13 +10,13 @@ Tutor 3.5: You will be able to specify what area of knowledge the response will 
 
 Tutor 4.0: Same as Tutor 3.5 but uses the chatGPT 4.0 model (more accurate answers than 3.5 but takes a bit longer to generate a response).
 
-Code Review: Leave 'Tutor:' and 'User:' empty. You will be prompted for a code file to open.  A review of the code (style, performance, readability, and maintainability) will be performed and displayed in 'Assistant:'.
+Code Review: Leave 'Tutor:' and 'User:' empty. You will be prompted for a code file to open.  A review of the code (style, performance, readability, and maintainability) will be performed and displayed in the 'Assistant:' box.
 
 Image Gen: Enter a description in the 'User:' box of an image you would like to be created. A url will be displayed in the 'Assistant:' box that you can copy into a web browser to view the image.
 
-Vision: Leave all text boxes empty. You will be prompted for an image file (.jpg or .png). An analysis and description of what the image contains will be displayed in 'Assistant'.
+Vision: Enter a question about the photo in question in the 'User:' box and hit Enter. You will be prompted for an image file (.jpg or .png). The corresponding answer will be displayed in the 'Assistant:' box.
                
-Speech-to-Text: Leave all text boxes empty. You will be prompted for an audio file (.mp3). A transcript of the audio file will be displayed in 'Assistant'.
+Speech-to-Text: Leave all text boxes empty. You will be prompted for an audio file (.mp3). A transcript of the audio file will be displayed in the 'Assistant:' box.
 
 Text-to-Speech: Enter your text in the 'User:' box. You will be asked to save a file that will contain an audio recording of the text entered (using the voice stated in the TTS_VOICE setting.)
 
@@ -29,7 +29,7 @@ Update API: Will check for an update to the 'openai' python package. If there is
 List Settings: Displays the current OpenAI settings used in this app. These can be edited by changing the 'config.ini' file.
 
 Other Buttons:
-Save: Will Save the current 'Assistant' text as a .txt file
+Save: Will Save the current 'Assistant:' text as a .txt file
 
 About: Displays Version number and date.
 

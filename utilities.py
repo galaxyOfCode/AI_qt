@@ -54,13 +54,14 @@ def update() -> str:
     if original_version == "error" or updated_version == "error":
         content = ("\nopenai package not found\n")
     if original_version != updated_version:
-        content = (f"OpenAI updated to version {updated_version}")
+        content = (f"{package} updated to version {updated_version}")
     else:
-        content = (f"\nOpenAI is already up to date ({original_version})\n")
+        content = (
+            f"\n{package} is already up to date: ({original_version})\n")
     return content
 
 
-def check_package_version(package_name):
+def check_package_version(package_name) -> str | None:
     """Returns the version number of a python package"""
 
     try:

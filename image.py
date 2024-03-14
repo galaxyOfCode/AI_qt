@@ -26,7 +26,7 @@ def generate_image(client, model, quality, text) -> str:
         return content
 
 
-def describe_image(api_key, model, max_tokens, image_path) -> str:
+def describe_image(api_key, model, max_tokens, image_path, prompt) -> str:
     """The user can select an image and ask for a description"""
 
     import requests
@@ -38,6 +38,7 @@ def describe_image(api_key, model, max_tokens, image_path) -> str:
     except (OSError, FileNotFoundError, PermissionError) as e:
         content = handle_file_errors(e)
         return content
+    user_text = prompt
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {api_key}"}
@@ -45,7 +46,7 @@ def describe_image(api_key, model, max_tokens, image_path) -> str:
         "model": model,
         "messages": [{"role": "user", "content": [{
             "type": "text",
-            "text": "What's in this image?"}, {
+            "text": user_text}, {
             "type": "image_url",
             "image_url": {
                 "url": f"data:image/png;base64,{base64_image}"}}]}], "max_tokens": max_tokens}

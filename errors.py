@@ -1,5 +1,7 @@
 import openai
-from requests.exceptions import HTTPError, Timeout, RequestException
+from requests.exceptions import (HTTPError, 
+                                 Timeout, 
+                                 RequestException)
 
 
 def handle_file_errors(exception) -> str:

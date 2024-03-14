@@ -56,7 +56,8 @@ class MainWindow(QWidget):
         """ Is a text field required for the selected radio button"""
 
         checked_buttons = ["Chat 3.5", "Chat 4.0", "Tutor 3.5",
-                           "Tutor 4.0", "Image Gen", "Text-to-Speech"]
+                           "Tutor 4.0", "Image Gen", "Text-to-Speech",
+                           "Vision"]
         button = self.radioframe.get_checked_radio_button()
         return button in checked_buttons
 
@@ -127,7 +128,7 @@ class MainWindow(QWidget):
                                                                      config.QUALITY, user_text),
             self.radioframe.radio_buttons[6]: lambda: describe_image(config.api_key,
                                                                      config.VISION_MODEL,
-                                                                     config.MAX_TOKENS, self.get_file_name()),
+                                                                     config.MAX_TOKENS, self.get_file_name(), user_text),
             self.radioframe.radio_buttons[7]: lambda: speech_to_text(self.client,
                                                                      config.WHISPER_MODEL,
                                                                      self.get_file_name()),
