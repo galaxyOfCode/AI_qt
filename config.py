@@ -21,6 +21,7 @@ class Config:
         self.CHAT_TEMP = self.cfg.getfloat("OPENAI", "CHAT_TEMP")
         self.TUTOR_TEMP = self.cfg.getfloat("OPENAI", "TUTOR_TEMP")
         self.IMG_MODEL = self.cfg["OPENAI"]["IMG_MODEL"]
+        self.IMG_SIZE = self.cfg["OPENAI"]["IMG_SIZE"]
         self.QUALITY = self.cfg["OPENAI"]["QUALITY"]
         self.VISION_MODEL = self.cfg["OPENAI"]["VISION_MODEL"]
         self.WHISPER_MODEL = self.cfg["OPENAI"]["WHISPER_MODEL"]

@@ -5,20 +5,19 @@ from errors import (handle_openai_errors,
                     handle_request_errors)
 
 
-def generate_image(client, model, quality, text) -> str:
+def generate_image(client, model, quality, text, size) -> str:
     """
     Image generator
 
-    This will allow the user to input a prompt and openAI will create an image based on the 'text';  'model' is
-    the image model that will be used (ie Dall-e-3); 'size' is the size of the image (ie 1024x1024);  number of
-    images is set to 1.
+    This will allow the user to input a prompt and openAI will create an image based on the 'text';  'model' is the image model that will be used (ie Dall-e-3); 'size' is the size of the image (ie 1024x1024);  number of images is set to 1.
     """
 
     try:
         response = client.images.generate(
             model=model,
             prompt=text,
-            quality=quality,)
+            quality=quality,
+            size=size,)
         image_url = response.data[0].url
         return image_url
     except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:

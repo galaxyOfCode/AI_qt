@@ -26,6 +26,7 @@ def get_settings(config) -> str:
         "GPT4_MODEL:": config.GPT4_MODEL,
         "CODE_REVIEW_MODEL:": config.GPT4_MODEL,
         "IMG_MODEL:": config.IMG_MODEL,
+        "IMG_SIZE:": config.IMG_SIZE,
         "QUALITY:": config.QUALITY,
         "VISION_MODEL:": config.VISION_MODEL,
         "WHISPER_MODEL:": config.WHISPER_MODEL,
