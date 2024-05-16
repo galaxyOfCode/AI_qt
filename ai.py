@@ -55,7 +55,7 @@ class MainWindow(QWidget):
     def is_user_input_required(self) -> bool:
         """ Is a text field required for the selected radio button"""
 
-        checked_buttons = ["Chat 3.5", "Chat 4.0", "Tutor 3.5",
+        checked_buttons = ["Chat 3.5", "Chat 4.0", "CS Tutor 4.0",
                            "Tutor 4.0", "Image Gen", "Text-to-Speech",
                            "Vision"]
         button = self.radioframe.get_checked_radio_button()
@@ -65,7 +65,7 @@ class MainWindow(QWidget):
         """ Is a text field required for the selected radio button"""
 
         button = self.radioframe.get_checked_radio_button()
-        return button == "Tutor 3.5" or button == "Tutor 4.0"
+        return button == "Tutor 4.0"
 
     @staticmethod
     def get_file_name() -> str:
@@ -112,9 +112,9 @@ class MainWindow(QWidget):
                                                            config.CHAT_TEMP, config.FREQ_PENALTY,
                                                            1, user_text),
             self.radioframe.radio_buttons[2]: lambda: chat(self.client,
-                                                           config.GPT3_MODEL,
+                                                           config.GPT4_MODEL,
                                                            config.TUTOR_TEMP, config.FREQ_PENALTY,
-                                                           0, user_text, tutor_text),
+                                                           2, user_text, tutor_text),
             self.radioframe.radio_buttons[3]: lambda: chat(self.client,
                                                            config.GPT4_MODEL,
                                                            config.TUTOR_TEMP, config.FREQ_PENALTY,
