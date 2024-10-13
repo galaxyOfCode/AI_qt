@@ -13,10 +13,8 @@ class RadioFrame(QFrame):
         super().__init__(parent)
         self.radio_layout = QVBoxLayout(self)
         self.radio_buttons = []  # List to store radio buttons
-        self.radio_button_labels = ["Chat 3.5", "Chat 4.0", "CS Tutor 4.0",
-                                    "Tutor 4.0", "Code Review",
-                                    "Image Gen", "Vision", "Speech-to-Text", "Text-to-Speech", "List GPT Models",
-                                    "List All Models", "Update API", 
+        self.radio_button_labels = ["Faster", "Better", "Code Review", "Image Gen", 
+                                    "Vision", "Speech-to-Text", "Text-to-Speech", "List GPT Models", "List All Models", "Update API", 
                                     "List Settings"]
         self.add_widgets()
         self.layout_ui()
@@ -90,8 +88,6 @@ class MainFrame(QFrame):
         self.default_font_bold = config.DEFAULT_FONT
         self.default_font_bold.setBold(True)
         self.main_layout = QVBoxLayout()
-        self.tutor_lbl = QLabel("Tutor:")
-        self.tutor_input = QTextEdit()
         self.user_lbl = QLabel("User:")
         self.user_input = QTextEdit()
         self.asst_lbl = QLabel("Assistant:")
@@ -100,8 +96,6 @@ class MainFrame(QFrame):
         self.add_widgets()
 
     def set_ui_properties(self) -> None:
-        self.tutor_lbl.setFont(self.default_font_bold)
-        self.tutor_input.setFixedHeight(config.TUTOR_INPUT_HT)
         self.user_lbl.setFont(self.default_font_bold)
         self.user_input.setFixedHeight(config.USER_INPUT_HT)
         self.asst_lbl.setFont(self.default_font_bold)
@@ -111,8 +105,6 @@ class MainFrame(QFrame):
         self.user_input.setFocus()
 
     def add_widgets(self) -> None:
-        self.main_layout.addWidget(self.tutor_lbl)
-        self.main_layout.addWidget(self.tutor_input)
         self.main_layout.addWidget(self.user_lbl)
         self.main_layout.addWidget(self.user_input)
         self.main_layout.addWidget(self.asst_lbl)
@@ -123,7 +115,6 @@ class MainFrame(QFrame):
         """ Clear all text boxes and reset radio button """
 
         self.user_input.clear()
-        self.tutor_input.clear()
         self.asst_resp.clear()
         config.reload_config()
         self.user_input.setFocus()
@@ -143,7 +134,6 @@ class MainFrame(QFrame):
 
         about_content = "AI Assistant created by Jeff Hall"
         self.user_input.clear()
-        self.tutor_input.clear()
         self.asst_resp.clear()
         self.asst_resp.setPlainText(f"{about_content}\n{config.version}")
 

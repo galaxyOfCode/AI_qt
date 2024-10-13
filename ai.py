@@ -46,7 +46,7 @@ class MainWindow(QWidget):
         self.mainframe.user_input.setFocus()
 
     def no_prompt(self, box) -> None:
-        """Error message when no required user or tutor prompt detected"""
+        """Error message when no required user prompt detected"""
 
         self.mainframe.asst_resp.setPlainText(
             f"Please enter a prompt in the '{box}:' box")
@@ -55,17 +55,10 @@ class MainWindow(QWidget):
     def is_user_input_required(self) -> bool:
         """ Is a text field required for the selected radio button"""
 
-        checked_buttons = ["Chat 3.5", "Chat 4.0", "CS Tutor 4.0",
-                           "Tutor 4.0", "Image Gen", "Text-to-Speech",
+        checked_buttons = ["Faster", "Better", "Image Gen", "Text-to-Speech",
                            "Vision"]
         button = self.radioframe.get_checked_radio_button()
         return button in checked_buttons
-
-    def is_tutor_input_required(self) -> bool:
-        """ Is a text field required for the selected radio button"""
-
-        button = self.radioframe.get_checked_radio_button()
-        return button == "Tutor 4.0"
 
     @staticmethod
     def get_file_name() -> str:
@@ -92,57 +85,44 @@ class MainWindow(QWidget):
         self.mainframe.asst_resp.setPlainText("Processing . . .")
         self.buttonframe.enter_btn.setEnabled(False)
         user_text = self.mainframe.user_input.toPlainText()
-        tutor_text = self.mainframe.tutor_input.toPlainText()
 
         if not user_text and self.is_user_input_required():
             self.no_prompt("User")
             return
 
-        if not tutor_text and self.is_tutor_input_required():
-            self.no_prompt("Tutor")
-            return
-
         action_mapping = {
             self.radioframe.radio_buttons[0]: lambda: chat(self.client,
-                                                           config.GPT3_MODEL,
+                                                           config.FASTER_MODEL,
                                                            config.CHAT_TEMP, config.FREQ_PENALTY,
-                                                           1, user_text),
+                                                           user_text),
             self.radioframe.radio_buttons[1]: lambda: chat(self.client,
-                                                           config.GPT4_MODEL,
+                                                           config.BETTER_MODEL,
                                                            config.CHAT_TEMP, config.FREQ_PENALTY,
-                                                           1, user_text),
-            self.radioframe.radio_buttons[2]: lambda: chat(self.client,
-                                                           config.GPT4_MODEL,
-                                                           config.TUTOR_TEMP, config.FREQ_PENALTY,
-                                                           2, user_text, tutor_text),
-            self.radioframe.radio_buttons[3]: lambda: chat(self.client,
-                                                           config.GPT4_MODEL,
-                                                           config.TUTOR_TEMP, config.FREQ_PENALTY,
-                                                           0, user_text, tutor_text),
-            self.radioframe.radio_buttons[4]: lambda: code_review(self.client,
-                                                                  config.GPT4_MODEL,
-                                                                  config.TUTOR_TEMP,
+                                                           user_text),
+            self.radioframe.radio_buttons[2]: lambda: code_review(self.client,
+                                                                  config.BETTER_MODEL,
+                                                                  config.CHAT_TEMP,
                                                                   self.get_file_name()),
-            self.radioframe.radio_buttons[5]: lambda: generate_image(self.client,
+            self.radioframe.radio_buttons[3]: lambda: generate_image(self.client,
                                                                      config.IMG_MODEL,
                                                                      config.QUALITY, user_text,
                                                                      config.IMG_SIZE),
-            self.radioframe.radio_buttons[6]: lambda: describe_image(config.api_key,
+            self.radioframe.radio_buttons[4]: lambda: describe_image(config.api_key,
                                                                      config.VISION_MODEL,
                                                                      config.MAX_TOKENS, self.get_file_name(), user_text),
-            self.radioframe.radio_buttons[7]: lambda: speech_to_text(self.client,
+            self.radioframe.radio_buttons[5]: lambda: speech_to_text(self.client,
                                                                      config.WHISPER_MODEL,
                                                                      self.get_file_name()),
-            self.radioframe.radio_buttons[8]: lambda: text_to_speech(self.client,
+            self.radioframe.radio_buttons[6]: lambda: text_to_speech(self.client,
                                                                      config.TTS_MODEL,
                                                                      config.TTS_VOICE, user_text,
                                                                      config.speech_file_path),
-            self.radioframe.radio_buttons[9]: lambda: get_model_names(self.client,
+            self.radioframe.radio_buttons[7]: lambda: get_model_names(self.client,
                                                                       1),
-            self.radioframe.radio_buttons[10]: lambda: get_model_names(self.client,
+            self.radioframe.radio_buttons[8]: lambda: get_model_names(self.client,
                                                                        0),
-            self.radioframe.radio_buttons[11]: lambda: update(),
-            self.radioframe.radio_buttons[12]: lambda: get_settings(config),
+            self.radioframe.radio_buttons[9]: lambda: update(),
+            self.radioframe.radio_buttons[10]: lambda: get_settings(config),
         }
 
         for button, action in action_mapping.items():

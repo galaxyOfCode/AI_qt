@@ -22,9 +22,9 @@ def get_settings(config) -> str:
     """ Print all hardcoded 'Magic Numbers' """
 
     settings = {
-        "GPT3_MODEL:": config.GPT3_MODEL,
-        "GPT4_MODEL:": config.GPT4_MODEL,
-        "CODE_REVIEW_MODEL:": config.GPT4_MODEL,
+        "FASTER_MODEL:": config.FASTER_MODEL,
+        "BETTER_MODEL:": config.BETTER_MODEL,
+        "CODE_REVIEW_MODEL:": config.BETTER_MODEL,
         "IMG_MODEL:": config.IMG_MODEL,
         "IMG_SIZE:": config.IMG_SIZE,
         "QUALITY:": config.QUALITY,
@@ -32,7 +32,6 @@ def get_settings(config) -> str:
         "WHISPER_MODEL:": config.WHISPER_MODEL,
         "TTS_MODEL:": config.TTS_MODEL,
         "TTS_VOICE:": config.TTS_VOICE,
-        "TUTOR_TEMP:": config.TUTOR_TEMP,
         "CHAT_TEMP:": config.CHAT_TEMP,
         "FREQ_PENALTY:": config.FREQ_PENALTY,
         "MAX_TOKENS:": config.MAX_TOKENS}

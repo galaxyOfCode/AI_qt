@@ -15,11 +15,10 @@ class Config:
         self.cfg = ConfigParser()
         self.cfg.read(config_file)
 
-        self.GPT3_MODEL = self.cfg["OPENAI"]["GPT3_MODEL"]
-        self.GPT4_MODEL = self.cfg["OPENAI"]["GPT4_MODEL"]
+        self.FASTER_MODEL = self.cfg["OPENAI"]["FASTER_MODEL"]
+        self.BETTER_MODEL = self.cfg["OPENAI"]["BETTER_MODEL"]
         self.FREQ_PENALTY = self.cfg.getfloat("OPENAI", "FREQ_PENALTY")
         self.CHAT_TEMP = self.cfg.getfloat("OPENAI", "CHAT_TEMP")
-        self.TUTOR_TEMP = self.cfg.getfloat("OPENAI", "TUTOR_TEMP")
         self.IMG_MODEL = self.cfg["OPENAI"]["IMG_MODEL"]
         self.IMG_SIZE = self.cfg["OPENAI"]["IMG_SIZE"]
         self.QUALITY = self.cfg["OPENAI"]["QUALITY"]
@@ -33,7 +32,6 @@ class Config:
         self.version = self.cfg["OTHER"]["version"]
         self.api_key = get_api_key()
         self.BTN_WIDTH = 80
-        self.TUTOR_INPUT_HT = 30
         self.USER_INPUT_HT = 100
         self.ASST_RESP_HT = 300
         self.ASST_FONT = QFont("Menlo", 13)

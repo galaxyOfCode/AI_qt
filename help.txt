@@ -2,21 +2,17 @@ AI Assistant Help:
 
 Radio Buttons: Click the button that corresponds to the task you wish to perform. See below for info on each Radio Button.
 
-Chat 3.5: General knowledge inquiry using the chatGPT 3.5 model (quicker than 4.0 below). Settings are for more creative responses than the Tutor choices below. Your prompt goes in the 'User:' text box. Leave the 'Tutor:' box empty. The response will be displayed in the 'Assistant:' box.
+Faster: General knowledge inquiry using the faster chatGPT model (quicker than the 'better' model below). Your prompt goes in the 'User:' text box. The response will be displayed in the 'Assistant:' box.
 
-Chat 4.0:  Same as Chat 3.5 but uses the chatGPT 4.0 model (more accurate answers than 3.5 but takes a bit longer to generate a response).
+Better:  Same as 'faster' model above but uses the better chatGPT model (more accurate answers, but takes a bit longer to generate a response).
 
-Tutor 3.5: You will be able to specify what area of knowledge the response will be focused on.  This will use the 3.5 model but the settings will be for more precise responses (less creativity). Your question goes in the text box under 'User:'. Enter your subject area (ie Physics) in the 'Tutor:' box. The response will be displayed in the 'Assistant:' box.
-
-Tutor 4.0: Same as Tutor 3.5 but uses the chatGPT 4.0 model (more accurate answers than 3.5 but takes a bit longer to generate a response).
-
-Code Review: Leave 'Tutor:' and 'User:' empty. You will be prompted for a code file to open.  A review of the code (style, performance, readability, and maintainability) will be performed and displayed in the 'Assistant:' box.
+Code Review: Leave 'User:' empty. You will be prompted for a code file to open.  A review of the code (style, performance, readability, and maintainability) will be performed and displayed in the 'Assistant:' box.
 
 Image Gen: Enter a description in the 'User:' box of an image you would like to be created. A url will be displayed in the 'Assistant:' box that you can copy into a web browser to view the image.
 
 Vision: Enter a question about the photo in question in the 'User:' box and hit Enter. You will be prompted for an image file (.jpg or .png). The corresponding answer will be displayed in the 'Assistant:' box.
                
-Speech-to-Text: Leave all text boxes empty. You will be prompted for an audio file (.mp3). A transcript of the audio file will be displayed in the 'Assistant:' box.
+Speech-to-Text: Leave 'User:' box empty. You will be prompted for an audio file (.mp3). A transcript of the audio file will be displayed in the 'Assistant:' box.
 
 Text-to-Speech: Enter your text in the 'User:' box. You will be asked to save a file that will contain an audio recording of the text entered (using the voice stated in the TTS_VOICE setting.)
 
