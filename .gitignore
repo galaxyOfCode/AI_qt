@@ -4,3 +4,7 @@
 *.iml
 *.xml
 .idea
+__pycache__
+.dist
+.idea
+*.xml

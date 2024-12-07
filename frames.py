@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import (QTextEdit, QFrame, QVBoxLayout,
                              QRadioButton, QPushButton, QLabel,
                              QFileDialog)
-from PyQt6.QtCore import QCoreApplication
+from PyQt6.QtCore import QCoreApplication, Qt
 
 from config import Config
 
@@ -29,7 +29,7 @@ class RadioFrame(QFrame):
             self.radio_buttons.append(rb)
             self.radio_layout.addWidget(rb)
 
-    def get_checked_radio_button(self):
+    def get_checked_radio_button(self) -> str | None:
         for rb in self.radio_buttons:
             if rb.isChecked():
                 return rb.text()
@@ -117,6 +117,8 @@ class MainFrame(QFrame):
         self.user_input.clear()
         self.asst_resp.clear()
         config.reload_config()
+        self.asst_resp.setTextColor(Qt.GlobalColor.black)
+        self.asst_resp.setFontUnderline(False)
         self.user_input.setFocus()
 
     def on_help_click(self) -> None:
