@@ -17,6 +17,7 @@ class Config:
 
         self.FASTER_MODEL = self.cfg["OPENAI"]["FASTER_MODEL"]
         self.BETTER_MODEL = self.cfg["OPENAI"]["BETTER_MODEL"]
+        self.REASONING_MODEL = self.cfg["OPENAI"]["REASONING_MODEL"]
         self.FREQ_PENALTY = self.cfg.getfloat("OPENAI", "FREQ_PENALTY")
         self.CHAT_TEMP = self.cfg.getfloat("OPENAI", "CHAT_TEMP")
         self.IMG_MODEL = self.cfg["OPENAI"]["IMG_MODEL"]

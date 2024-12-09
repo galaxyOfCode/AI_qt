@@ -13,7 +13,7 @@ class RadioFrame(QFrame):
         super().__init__(parent)
         self.radio_layout = QVBoxLayout(self)
         self.radio_buttons = []  # List to store radio buttons
-        self.radio_button_labels = ["Faster", "Better", "Code Review", "Image Gen", 
+        self.radio_button_labels = ["Faster", "Better", "Reasoning", "Code Review", "Image Gen", 
                                     "Vision", "Speech-to-Text", "Text-to-Speech", "List GPT Models", "List All Models", "Update API", 
                                     "List Settings"]
         self.add_widgets()

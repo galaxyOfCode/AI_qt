@@ -24,6 +24,7 @@ def get_settings(config) -> str:
     settings = {
         "FASTER_MODEL:": config.FASTER_MODEL,
         "BETTER_MODEL:": config.BETTER_MODEL,
+        "REASONING_MODEL:": config.REASONING_MODEL,
         "CODE_REVIEW_MODEL:": config.BETTER_MODEL,
         "IMG_MODEL:": config.IMG_MODEL,
         "IMG_SIZE:": config.IMG_SIZE,

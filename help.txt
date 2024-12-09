@@ -6,6 +6,8 @@ Faster: General knowledge inquiry using the faster chatGPT model (quicker than t
 
 Better:  Same as 'faster' model above but uses the better chatGPT model (more accurate answers, but takes a bit longer to generate a response).
 
+Reasoning:  Same as 'faster' but uses a 'reasoning' model such as o1-preview or o1-mini. Response may take even longer than 'better'.
+
 Code Review: Leave 'User:' empty. You will be prompted for a code file to open.  A review of the code (style, performance, readability, and maintainability) will be performed and displayed in the 'Assistant:' box.
 
 Image Gen: Enter a description in the 'User:' box of an image you would like to be created. A url will be displayed in the 'Assistant:' box that you can copy into a web browser to view the image.
