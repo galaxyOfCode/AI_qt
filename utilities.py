@@ -1,18 +1,13 @@
 import subprocess
 
 
-def get_model_names(client, option) -> str:
+def get_model_names(client) -> str:
     """List either the GPT models, or all models available through the API"""
 
     model_list = client.models.list()
     models_data = model_list.data
     model_ids = [model.id for model in models_data]
-    if option:
-        model_ids = [
-            model_id for model_id in model_ids if model_id.startswith("gpt")]
-        header = "Current openAI GPT Models:\n\n"
-    else:
-        header = "Current openAI Models:\n\n"
+    header = "Current openAI Models:\n\n"
     model_ids.sort()
     content = ("\n".join(model_ids))
     return header + content
@@ -22,19 +17,13 @@ def get_settings(config) -> str:
     """ Print all hardcoded 'Magic Numbers' """
 
     settings = {
-        "FASTER_MODEL:": config.FASTER_MODEL,
-        "BETTER_MODEL:": config.BETTER_MODEL,
-        "REASONING_MODEL:": config.REASONING_MODEL,
-        "CODE_REVIEW_MODEL:": config.BETTER_MODEL,
+        "MODEL_LIST:": config.MODEL_LIST,
         "IMG_MODEL:": config.IMG_MODEL,
         "IMG_SIZE:": config.IMG_SIZE,
         "QUALITY:": config.QUALITY,
-        "VISION_MODEL:": config.VISION_MODEL,
         "WHISPER_MODEL:": config.WHISPER_MODEL,
         "TTS_MODEL:": config.TTS_MODEL,
         "TTS_VOICE:": config.TTS_VOICE,
-        "CHAT_TEMP:": config.CHAT_TEMP,
-        "FREQ_PENALTY:": config.FREQ_PENALTY,
         "MAX_TOKENS:": config.MAX_TOKENS}
     longest_key_length = max(len(key) for key in settings)
     content = "Current Settings:\n\n"

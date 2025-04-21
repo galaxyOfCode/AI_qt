@@ -2,23 +2,17 @@ AI Assistant Help:
 
 Radio Buttons: Click the button that corresponds to the task you wish to perform. See below for info on each Radio Button.
 
-Faster: General knowledge inquiry using the faster chatGPT model (quicker than the 'better' model below). Your prompt goes in the 'User:' text box. The response will be displayed in the 'Assistant:' box.
+Chat: Knowledge inquiry using the chosen chatGPT model (see Model Selection below). Your prompt goes in the 'User:' text box. The response will be displayed in the 'Assistant:' box.
 
-Better:  Same as 'faster' model above but uses the better chatGPT model (more accurate answers, but takes a bit longer to generate a response).
+Code Review: Leave 'User:' empty but select the model to use and hit Enter. You will be prompted for a code file to open.  A review of the code (style, performance, readability, and maintainability) will be performed and displayed in the 'Assistant:' box.
 
-Reasoning:  Same as 'faster' but uses a 'reasoning' model such as o1-preview or o1-mini. Response may take even longer than 'better'.
+Image Gen: Enter a description in the 'User:' box of an image you would like to be created. The model is hard coded into the config.ini file.  A url will be displayed in the 'Assistant:' box that you can copy into a web browser to view the image.
 
-Code Review: Leave 'User:' empty. You will be prompted for a code file to open.  A review of the code (style, performance, readability, and maintainability) will be performed and displayed in the 'Assistant:' box.
-
-Image Gen: Enter a description in the 'User:' box of an image you would like to be created. A url will be displayed in the 'Assistant:' box that you can copy into a web browser to view the image.
-
-Vision: Enter a question about the photo in question in the 'User:' box and hit Enter. You will be prompted for an image file (.jpg or .png). The corresponding answer will be displayed in the 'Assistant:' box.
+Vision: Enter a question about the photo in question in the 'User:' box, select the model to use and hit Enter. You will be prompted for an image file (.jpg or .png). The corresponding answer will be displayed in the 'Assistant:' box.
                
-Speech-to-Text: Leave 'User:' box empty. You will be prompted for an audio file (.mp3). A transcript of the audio file will be displayed in the 'Assistant:' box.
+Speech-to-Text: Leave 'User:' box empty. The model is hard coded into the config.ini file.  You will be prompted for an audio file (.mp3). A transcript of the audio file will be displayed in the 'Assistant:' box.
 
-Text-to-Speech: Enter your text in the 'User:' box. You will be asked to save a file that will contain an audio recording of the text entered (using the voice stated in the TTS_VOICE setting.)
-
-List GPT Models: Displays the current GPT models available through the openAI API.
+Text-to-Speech: Enter your text in the 'User:' box. The model is hard coded into the config.ini file. You will be asked to save a file that will contain an audio recording of the text entered (using the voice stated in the TTS_VOICE setting.)
 
 List All Models: Displays all the models available through the openAI API.
 
@@ -26,18 +20,17 @@ Update API: Will check for an update to the 'openai' python package. If there is
 
 List Settings: Displays the current OpenAI settings used in this app. These can be edited by changing the 'config.ini' file.
 
+Model Selection: For "Chat, Code Review and Vision" Operations only.  Choose the model you would like to use from the pull-down list.
+
 Other Buttons:
 Save: Will Save the current 'Assistant:' text as a .txt file
 
 About: Displays Version number and date.
 
-Clear: Clears all text boxes and selects the default radio button (Chat 4.0).
+Clear: Clears all text boxes and selects the default radio button (Chat).
 
 Help: Displays this text.
 
 Quit: Ends program.
 
 Enter: Accepts input and attempts to generate a response.  Will respond with error messages if something is not correct.
-
-
-

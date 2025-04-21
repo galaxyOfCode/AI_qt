@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import (QTextEdit, QFrame, QVBoxLayout,
                              QRadioButton, QPushButton, QLabel,
-                             QFileDialog)
+                             QFileDialog, QHBoxLayout, QComboBox)
 from PyQt6.QtCore import QCoreApplication, Qt
 
 from config import Config
@@ -9,18 +9,18 @@ config = Config()
 
 
 class RadioFrame(QFrame):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None) -> None:
         super().__init__(parent)
         self.radio_layout = QVBoxLayout(self)
         self.radio_buttons = []  # List to store radio buttons
-        self.radio_button_labels = ["Faster", "Better", "Reasoning", "Code Review", "Image Gen", 
-                                    "Vision", "Speech-to-Text", "Text-to-Speech", "List GPT Models", "List All Models", "Update API", 
-                                    "List Settings"]
+        self.radio_button_labels = ["Chat", "Code Review", "Image Gen", "Vision", 
+                                    "Speech-to-Text", "Text-to-Speech", "List All Models", 
+                                    "Update API", "List Settings"]
         self.add_widgets()
         self.layout_ui()
 
     def layout_ui(self) -> None:
-        self.radio_buttons[1].setChecked(True)
+        self.radio_buttons[0].setChecked(True)
         self.setLayout(self.radio_layout)
 
     def add_widgets(self) -> None:
@@ -36,9 +36,33 @@ class RadioFrame(QFrame):
         return None
 
 
+class ModelFrame(QFrame):
+    def __init__(self, parent=None, models=None) -> None:
+        super().__init__(parent)
+        self.layout = QHBoxLayout(self)
+
+        # Label
+        self.label = QLabel("Model:")
+        self.label.setFixedWidth(50)
+
+        # Combo box
+        self.combo = QComboBox()
+        models = config.MODEL_LIST 
+        for m in models:
+            self.combo.addItem(m)
+
+        # Assemble
+        self.layout.addWidget(self.label)
+        self.layout.addWidget(self.combo)
+        self.setLayout(self.layout)
+
+    def get_selected_model(self) -> str:
+        return self.combo.currentText()
+    
+
 # noinspection PyUnresolvedReferences
 class ButtonFrame(QFrame):
-    def __init__(self, mainframe, parent=None):
+    def __init__(self, mainframe, parent=None) -> None:
         super().__init__(parent)
         self.mainframe = mainframe
         self.button_layout = QVBoxLayout()
@@ -83,7 +107,7 @@ class ButtonFrame(QFrame):
 
 
 class MainFrame(QFrame):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None) -> None:
         super().__init__(parent)
         self.default_font_bold = config.DEFAULT_FONT
         self.default_font_bold.setBold(True)

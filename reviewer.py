@@ -3,7 +3,7 @@ import openai
 from errors import handle_openai_errors, handle_file_errors
 
 
-def code_review(client, model, temperature, file_path) -> str:
+def code_review(client, model, file_path) -> str:
     """
     Reviews a code file.
 
@@ -24,7 +24,6 @@ def code_review(client, model, temperature, file_path) -> str:
             try:
                 response = client.chat.completions.create(
                     model=model,
-                    temperature=temperature,
                     messages=messages)
             except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
                 content = handle_openai_errors(e)

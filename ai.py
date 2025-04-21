@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import (QApplication, QWidget,
 
 from chat import chat
 from config import Config
-from frames import MainFrame, ButtonFrame, RadioFrame
+from frames import MainFrame, ButtonFrame, RadioFrame, ModelFrame
 from image import describe_image, generate_image
 from reviewer import code_review
 from utilities import get_model_names, get_settings, update
@@ -14,7 +14,7 @@ config = Config()
 
 
 class MainWindow(QWidget):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.client = OpenAI()
         self.default_font_norm = config.DEFAULT_FONT
@@ -32,11 +32,13 @@ class MainWindow(QWidget):
         self.mainframe = MainFrame()
         self.radioframe = RadioFrame(self.mainframe)
         self.buttonframe = ButtonFrame(self.mainframe)
+        self.modelframe = ModelFrame(self.mainframe)
 
         # Add frames to the layout
         self.grid.addWidget(self.radioframe, 0, 0)
-        self.grid.addWidget(self.buttonframe, 1, 0)
-        self.grid.addWidget(self.mainframe, 0, 1, 2, 1)
+        self.grid.addWidget(self.modelframe, 1, 0)
+        self.grid.addWidget(self.buttonframe, 2, 0)
+        self.grid.addWidget(self.mainframe, 0, 1, 3, 1)
 
         # Set Enter button action
         self.buttonframe.enter_btn.clicked.connect(self.on_enter_click)
@@ -55,7 +57,7 @@ class MainWindow(QWidget):
     def is_user_input_required(self) -> bool:
         """ Is a text field required for the selected radio button"""
 
-        checked_buttons = ["Faster", "Better", "Image Gen", "Text-to-Speech",
+        checked_buttons = ["Chat", "Image Gen", "Text-to-Speech",
                            "Vision"]
         button = self.radioframe.get_checked_radio_button()
         return button in checked_buttons
@@ -85,47 +87,37 @@ class MainWindow(QWidget):
         self.mainframe.asst_resp.setPlainText("Processing . . .")
         self.buttonframe.enter_btn.setEnabled(False)
         user_text = self.mainframe.user_input.toPlainText()
+        chosen_model = self.modelframe.combo.currentText()
+        r_flag = 1 if chosen_model.startswith("gpt") else 0            
 
         if not user_text and self.is_user_input_required():
             self.no_prompt("User")
             return
-
+        
         action_mapping = {
             self.radioframe.radio_buttons[0]: lambda: chat(self.client,
-                                                           config.FASTER_MODEL,
-                                                           config.CHAT_TEMP, config.FREQ_PENALTY,
-                                                           user_text, 0),
-            self.radioframe.radio_buttons[1]: lambda: chat(self.client,
-                                                           config.BETTER_MODEL,
-                                                           config.CHAT_TEMP, config.FREQ_PENALTY,
-                                                           user_text, 0),
-            self.radioframe.radio_buttons[2]: lambda: chat(self.client, config.REASONING_MODEL,
-                                                           config.CHAT_TEMP, config.FREQ_PENALTY,
-                                                           user_text, 1),
-            self.radioframe.radio_buttons[3]: lambda: code_review(self.client,
-                                                                  config.BETTER_MODEL,
-                                                                  config.CHAT_TEMP,
+                                                           chosen_model,
+                                                           user_text, r_flag),
+            self.radioframe.radio_buttons[1]: lambda: code_review(self.client,
+                                                                  chosen_model,
                                                                   self.get_file_name()),
-            self.radioframe.radio_buttons[4]: lambda: generate_image(self.client,
+            self.radioframe.radio_buttons[2]: lambda: generate_image(self.client,
                                                                      config.IMG_MODEL,
                                                                      config.QUALITY, user_text,
                                                                      config.IMG_SIZE),
-            self.radioframe.radio_buttons[5]: lambda: describe_image(config.api_key,
-                                                                     config.VISION_MODEL,
+            self.radioframe.radio_buttons[3]: lambda: describe_image(config.api_key,
+                                                                     chosen_model,
                                                                      config.MAX_TOKENS, self.get_file_name(), user_text),
-            self.radioframe.radio_buttons[6]: lambda: speech_to_text(self.client,
+            self.radioframe.radio_buttons[4]: lambda: speech_to_text(self.client,
                                                                      config.WHISPER_MODEL,
                                                                      self.get_file_name()),
-            self.radioframe.radio_buttons[7]: lambda: text_to_speech(self.client,
+            self.radioframe.radio_buttons[5]: lambda: text_to_speech(self.client,
                                                                      config.TTS_MODEL,
                                                                      config.TTS_VOICE, user_text,
                                                                      config.speech_file_path),
-            self.radioframe.radio_buttons[8]: lambda: get_model_names(self.client,
-                                                                      1),
-            self.radioframe.radio_buttons[9]: lambda: get_model_names(self.client,
-                                                                       0),
-            self.radioframe.radio_buttons[10]: lambda: update(),
-            self.radioframe.radio_buttons[11]: lambda: get_settings(config),
+            self.radioframe.radio_buttons[6]: lambda: get_model_names(self.client),
+            self.radioframe.radio_buttons[7]: lambda: update(),
+            self.radioframe.radio_buttons[8]: lambda: get_settings(config),
         }
 
         for button, action in action_mapping.items():
@@ -138,7 +130,7 @@ class MainWindow(QWidget):
         self.buttonframe.enter_btn.setEnabled(True)
 
 
-def main():
+def main() -> None:
     app = QApplication([])
     mw = MainWindow()
     mw.show()
