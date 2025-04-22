@@ -60,6 +60,43 @@ class ModelFrame(QFrame):
         return self.combo.currentText()
     
 
+class ReasonFrame(QFrame):
+    def __init__(self, parent=None) -> None:
+        super().__init__(parent)
+        
+        self.radio_buttons = []
+        self.radio_button_labels = ["low", "medium", "high"]
+        
+        self.label = QLabel("Reasoning:")
+
+        # Create the vertical layout for the label + buttons
+        self.main_layout = QVBoxLayout(self)
+        
+        # Create a horizontal layout just for the radio buttons
+        self.button_layout = QHBoxLayout()
+        
+        self.add_widgets()
+        self.layout_ui()
+
+    def layout_ui(self) -> None:
+        self.radio_buttons[1].setChecked(True)
+        self.setLayout(self.main_layout)
+
+    def add_widgets(self) -> None:
+        self.main_layout.addWidget(self.label)
+        for label in self.radio_button_labels:
+            rb = QRadioButton(label)
+            self.radio_buttons.append(rb)
+            self.button_layout.addWidget(rb)
+        self.main_layout.addLayout(self.button_layout)
+
+    def get_checked_radio_button(self) -> str | None:
+        for rb in self.radio_buttons:
+            if rb.isChecked():
+                return rb.text()
+        return None
+    
+
 # noinspection PyUnresolvedReferences
 class ButtonFrame(QFrame):
     def __init__(self, mainframe, parent=None) -> None:

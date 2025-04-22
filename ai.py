@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import (QApplication, QWidget,
 
 from chat import chat
 from config import Config
-from frames import MainFrame, ButtonFrame, RadioFrame, ModelFrame
+from frames import MainFrame, ButtonFrame, RadioFrame, ModelFrame, ReasonFrame
 from image import describe_image, generate_image
 from reviewer import code_review
 from utilities import get_model_names, get_settings, update
@@ -33,12 +33,14 @@ class MainWindow(QWidget):
         self.radioframe = RadioFrame(self.mainframe)
         self.buttonframe = ButtonFrame(self.mainframe)
         self.modelframe = ModelFrame(self.mainframe)
+        self.reasonframe = ReasonFrame(self.mainframe)
 
         # Add frames to the layout
         self.grid.addWidget(self.radioframe, 0, 0)
         self.grid.addWidget(self.modelframe, 1, 0)
-        self.grid.addWidget(self.buttonframe, 2, 0)
-        self.grid.addWidget(self.mainframe, 0, 1, 3, 1)
+        self.grid.addWidget(self.reasonframe, 2, 0)
+        self.grid.addWidget(self.buttonframe, 3, 0)
+        self.grid.addWidget(self.mainframe, 0, 1, 4, 1)
 
         # Set Enter button action
         self.buttonframe.enter_btn.clicked.connect(self.on_enter_click)
@@ -88,7 +90,15 @@ class MainWindow(QWidget):
         self.buttonframe.enter_btn.setEnabled(False)
         user_text = self.mainframe.user_input.toPlainText()
         chosen_model = self.modelframe.combo.currentText()
-        r_flag = 1 if chosen_model.startswith("gpt") else 0            
+        if chosen_model.startswith("gpt") or chosen_model == "o1-mini":
+            r_flag = 0
+        else:
+            r_flag = 1 
+        
+        if r_flag == 1:
+            reasoning = self.reasonframe.get_checked_radio_button()
+        else:
+            reasoning = "" 
 
         if not user_text and self.is_user_input_required():
             self.no_prompt("User")
@@ -96,8 +106,10 @@ class MainWindow(QWidget):
         
         action_mapping = {
             self.radioframe.radio_buttons[0]: lambda: chat(self.client,
-                                                           chosen_model,
-                                                           user_text, r_flag),
+                                                           chosen_model, 
+                                                           reasoning,
+                                                           user_text, 
+                                                           r_flag),
             self.radioframe.radio_buttons[1]: lambda: code_review(self.client,
                                                                   chosen_model,
                                                                   self.get_file_name()),

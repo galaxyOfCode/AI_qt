@@ -22,6 +22,8 @@ List Settings: Displays the current OpenAI settings used in this app. These can 
 
 Model Selection: For "Chat, Code Review and Vision" Operations only.  Choose the model you would like to use from the pull-down list.
 
+Reasoning: Select the effort that the model will use to "reason" through a solution.  Only works for o1, o3-mini and o4-mini models (ignored by the other models)
+
 Other Buttons:
 Save: Will Save the current 'Assistant:' text as a .txt file
 
