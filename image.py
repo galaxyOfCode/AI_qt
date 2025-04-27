@@ -1,25 +1,39 @@
 import openai
+import base64
+from PIL import Image
+from io import BytesIO
 
 from errors import (handle_openai_errors,
                     handle_file_errors,
                     handle_request_errors)
 
 
-def generate_image(client, model, quality, text, size) -> str:
+def generate_image(client, model, quality, text, size, path) -> str:
     """
     Image generator
 
-    This will allow the user to input a prompt and openAI will create an image based on the 'text';  'model' is the image model that will be used (ie Dall-e-3); 'size' is the size of the image (ie 1024x1024);  number of images is set to 1.
+    This will allow the user to input a prompt and openAI will create an image based on the 'text';  'model' is the image model that will be used (ie gpt-image-1); 'size' is the size of the image (ie 1024x1024);  quality comes from the reasoning/quality radio button, path is set in the config.ini file, number of images is set to 1.
     """
 
     try:
-        response = client.images.generate(
+        result = client.images.generate(
             model=model,
             prompt=text,
             quality=quality,
-            size=size,)
-        image_url = response.data[0].url
-        return image_url
+            size=size,
+            n=1,
+        )
+        
+        image_base64 = result.data[0].b64_json
+        image_bytes = base64.b64decode(image_base64)
+
+        image = Image.open(BytesIO(image_bytes))
+        image.save(path, format="JPEG", quality=80, optimize=True)
+        image.show()
+
+        content = "Image generated successfully. Check the Desktop file 'image.jpg'."
+        return content
+    
     except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
         content = handle_openai_errors(e)
         return content
@@ -29,7 +43,6 @@ def describe_image(api_key, model, max_tokens, image_path, prompt) -> str:
     """The user can select an image and ask for a description"""
 
     import requests
-    import base64
     from requests.exceptions import HTTPError, Timeout, RequestException
     try:
         with open(image_path, "rb") as image_file:
@@ -48,7 +61,7 @@ def describe_image(api_key, model, max_tokens, image_path, prompt) -> str:
             "text": user_text}, {
             "type": "image_url",
             "image_url": {
-                "url": f"data:image/png;base64,{base64_image}"}}]}], "max_tokens": max_tokens}
+                "url": f"data:image/png;base64,{base64_image}"}}]}]}
     try:
         response = requests.post(
             "https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
@@ -57,6 +70,7 @@ def describe_image(api_key, model, max_tokens, image_path, prompt) -> str:
         content = handle_request_errors(e)
         return content
     try:
+        print(data)
         content = data["choices"][0]["message"]["content"]
         return content
     except ValueError:

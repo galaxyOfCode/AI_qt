@@ -18,12 +18,12 @@ class Config:
         self.MODEL_LIST = self.cfg["OPENAI"]["MODEL_LIST"].split(", ")
         self.IMG_MODEL = self.cfg["OPENAI"]["IMG_MODEL"]
         self.IMG_SIZE = self.cfg["OPENAI"]["IMG_SIZE"]
-        self.QUALITY = self.cfg["OPENAI"]["QUALITY"]
         self.WHISPER_MODEL = self.cfg["OPENAI"]["WHISPER_MODEL"]
         self.TTS_MODEL = self.cfg["OPENAI"]["TTS_MODEL"]
         self.TTS_VOICE = self.cfg["OPENAI"]["TTS_VOICE"]
         self.MAX_TOKENS = self.cfg.getint("OPENAI", "MAX_TOKENS")
         self.speech_file_path = self.cfg["PATH"]["speech_file_path"]
+        self.image_path = self.cfg["PATH"]["image_file_path"]
         self.clipboard_path = self.cfg["PATH"]["clipboard_path"]
         self.version = self.cfg["OTHER"]["version"]
         self.api_key = get_api_key()

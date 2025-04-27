@@ -67,7 +67,7 @@ class ReasonFrame(QFrame):
         self.radio_buttons = []
         self.radio_button_labels = ["low", "medium", "high"]
         
-        self.label = QLabel("Reasoning:")
+        self.label = QLabel("Reasoning/Image Quality:")
 
         # Create the vertical layout for the label + buttons
         self.main_layout = QVBoxLayout(self)

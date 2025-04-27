@@ -17,18 +17,18 @@ def chat(client, model, reasoning, user_text, r_flag) -> str:
             messages = [{"role": "system", "content": initial_prompt}]
             messages.append({"role": "user", "content": user_text})
 
-            response = client.chat.completions.create(
+            response = client.responses.create(
                 model=model,
-                messages=messages)
+                input=messages)
         else:
             messages = [{"role": "user", "content": user_text}]
 
             response = client.responses.create(
                 model=model,
                 reasoning={"effort": reasoning},
-                messages=messages)
+                input=messages)
             
-        content = response.choices[0].message.content
+        content = response.output_text
         return content
     except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
         content = handle_openai_errors(e)

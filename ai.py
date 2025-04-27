@@ -95,10 +95,7 @@ class MainWindow(QWidget):
         else:
             r_flag = 1 
         
-        if r_flag == 1:
-            reasoning = self.reasonframe.get_checked_radio_button()
-        else:
-            reasoning = "" 
+        reasoning = self.reasonframe.get_checked_radio_button()
 
         if not user_text and self.is_user_input_required():
             self.no_prompt("User")
@@ -115,8 +112,9 @@ class MainWindow(QWidget):
                                                                   self.get_file_name()),
             self.radioframe.radio_buttons[2]: lambda: generate_image(self.client,
                                                                      config.IMG_MODEL,
-                                                                     config.QUALITY, user_text,
-                                                                     config.IMG_SIZE),
+                                                                     reasoning, user_text,
+                                                                     config.IMG_SIZE,
+                                                                     config.image_path),
             self.radioframe.radio_buttons[3]: lambda: describe_image(config.api_key,
                                                                      chosen_model,
                                                                      config.MAX_TOKENS, self.get_file_name(), user_text),
