@@ -2,34 +2,34 @@ AI Assistant Help:
 
 Radio Buttons: Click the button that corresponds to the task you wish to perform. See below for info on each Radio Button.
 
-Chat: Knowledge inquiry using the chosen chatGPT model (see Model Selection below). Your prompt goes in the 'User:' text box. The response will be displayed in the 'Assistant:' box.
+Chat: Knowledge inquiry using the chosen chatGPT model (see Model Selection below). Your prompt goes in the 'User:' text box. For reasoning models, also select the resoning level (low, medium or high). The response will be displayed in the 'Assistant:' box.
 
 Code Review: Leave 'User:' empty but select the model to use and hit Enter. You will be prompted for a code file to open.  A review of the code (style, performance, readability, and maintainability) will be performed and displayed in the 'Assistant:' box.
 
-Image Gen: Enter a description in the 'User:' box of an image you would like to be created. The model is hard coded into the config.ini file.  A url will be displayed in the 'Assistant:' box that you can copy into a web browser to view the image.
+Image Gen: Enter a description in the 'User:' box of an image you would like to be created. The model is hard coded into the config.ini file.  The image will be displayed as well as saved to the path identified in the config.ini file.
 
-Vision: Enter a question about the photo in question in the 'User:' box, select the model to use and hit Enter. You will be prompted for an image file (.jpg or .png). The corresponding answer will be displayed in the 'Assistant:' box.
+Vision: Enter a question about the image in question in the 'User:' box, select the model to use and hit Enter. You will be prompted for an image file (.jpg or .png). The corresponding description will be displayed in the 'Assistant:' box.
                
 Speech-to-Text: Leave 'User:' box empty. The model is hard coded into the config.ini file, so the model selection drop-down is ignored as well as the reasoning buttons.  You will be prompted for an audio file (.mp3). A transcript of the audio file will be displayed in the 'Assistant:' box.
 
-Text-to-Speech: Enter your text in the 'User:' box. The model is hard coded into the config.ini file, so the model selection drop-down is ignored as well as the reasoning buttons.. You will be asked to save a file that will contain an audio recording of the text entered (using the voice stated in the TTS_VOICE setting.)
+Text-to-Speech: Enter your text in the 'User:' box. The model and voice are hard coded into the config.ini file, so the model selection drop-down is ignored as well as the reasoning buttons. You will be asked to save a file that will contain an audio recording of the text entered.  Voices are: Alloy (neutral), Ash (calm), Ballad (melodic), Coral (energetic), Echo (deep), Fable (warm), Onyx (authoritative), Nova (friendly), Sage (wise), Shimmer (cheerful) and Verse (poetic).
 
 List All Models: Displays all the models available through the openAI API.
 
-Update API: Will check for an update to the 'openai' python package. If there is a new version available, it will download and install it.
+Update API: Will check for an update to the 'openai' python package. If there is a new version available, it will download and installed.
 
 List Settings: Displays the current OpenAI settings used in this app. These can be changed by editing the 'config.ini' file.
 
 Model Selection: For "Chat, Code Review and Vision" Operations only.  Choose the model you would like to use from the pull-down list.  All other operations use hard-coded models in the config.ini file.
 
-Reasoning: Select the effort that the model will use to "reason" through a solution.  Only works for o1, o3-mini and o4-mini models (ignored by the other models)
+Reasoning/Image Quality: If the "Chat" radio button is selcted, select the effort that the model will use to "reason" through a solution.  Only works for o1, o3-mini and o4-mini models (ignored by the other models).  If the "Image Gen" radio button was selected, these buttons will determine the quality of the image.
 
 Other Buttons:
 Save: Will Save the current 'Assistant:' text as a .txt file
 
 About: Displays Version number and date.
 
-Clear: Clears all text boxes and selects the default radio button (Chat).
+Clear: Clears all text boxes.
 
 Help: Displays this text.
 

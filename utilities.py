@@ -20,8 +20,7 @@ def get_settings(config) -> str:
         "MODEL_LIST:": config.MODEL_LIST,
         "IMG_MODEL:": config.IMG_MODEL,
         "IMG_SIZE:": config.IMG_SIZE,
-        "QUALITY:": config.QUALITY,
-        "WHISPER_MODEL:": config.WHISPER_MODEL,
+        "TRANSCRIBE_MODEL:": config.TRANSCRIBE_MODEL,
         "TTS_MODEL:": config.TTS_MODEL,
         "TTS_VOICE:": config.TTS_VOICE,
         "MAX_TOKENS:": config.MAX_TOKENS}

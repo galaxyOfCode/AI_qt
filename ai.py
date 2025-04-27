@@ -119,7 +119,7 @@ class MainWindow(QWidget):
                                                                      chosen_model,
                                                                      config.MAX_TOKENS, self.get_file_name(), user_text),
             self.radioframe.radio_buttons[4]: lambda: speech_to_text(self.client,
-                                                                     config.WHISPER_MODEL,
+                                                                     config.TRANSCRIBE_MODEL,
                                                                      self.get_file_name()),
             self.radioframe.radio_buttons[5]: lambda: text_to_speech(self.client,
                                                                      config.TTS_MODEL,
