@@ -1,4 +1,18 @@
+import logging
 import subprocess
+
+
+# Set up basic logging
+logging.basicConfig(
+    level=logging.INFO,  # Change to DEBUG for more verbosity
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler("app.log"),
+        logging.StreamHandler()
+    ]
+)
+
+logger = logging.getLogger(__name__)
 
 
 def get_model_names(client) -> str:
@@ -60,4 +74,5 @@ def check_package_version(package_name) -> str | None:
             if line.startswith('Version:'):
                 return line.split(': ')[1]
     except subprocess.CalledProcessError:
+        logger.exception("This is an exception trace.", exc_info=True)
         return "error"

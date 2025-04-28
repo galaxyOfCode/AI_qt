@@ -1,7 +1,20 @@
+import logging
 import openai
 from PyQt6.QtWidgets import QFileDialog
 
 from errors import handle_file_errors, handle_openai_errors
+
+# Set up basic logging
+logging.basicConfig(
+    level=logging.INFO,  # Change to DEBUG for more verbosity
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler("app.log"),
+        logging.StreamHandler()
+    ]
+)
+
+logger = logging.getLogger(__name__)
 
 
 def speech_to_text(client, model, choice) -> str:
@@ -21,9 +34,11 @@ def speech_to_text(client, model, choice) -> str:
             return content
     except (FileNotFoundError, PermissionError, OSError) as e:
         content = handle_file_errors(e)
+        logger.exception("This is an exception trace.", exc_info=True)
         return content
     except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
         content = handle_openai_errors(e)
+        logger.exception("This is an exception trace.", exc_info=True)
         return content
 
 
@@ -55,4 +70,5 @@ def text_to_speech(client, model, voice, text, path) -> str:
 
     except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
         content = handle_openai_errors(e)
+        logger.exception("This is an exception trace.", exc_info=True)
         return content

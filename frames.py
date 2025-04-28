@@ -1,3 +1,4 @@
+import logging
 from PyQt6.QtWidgets import (QTextEdit, QFrame, QVBoxLayout,
                              QRadioButton, QPushButton, QLabel,
                              QFileDialog, QHBoxLayout, QComboBox)
@@ -6,6 +7,19 @@ from PyQt6.QtCore import QCoreApplication, Qt
 from config import Config
 
 config = Config()
+
+
+# Set up basic logging
+logging.basicConfig(
+    level=logging.INFO,  # Change to DEBUG for more verbosity
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler("app.log"),
+        logging.StreamHandler()
+    ]
+)
+
+logger = logging.getLogger(__name__)
 
 
 class RadioFrame(QFrame):
@@ -190,6 +204,7 @@ class MainFrame(QFrame):
                 content = file.read()
             self.asst_resp.setPlainText(content)
         except FileNotFoundError:
+            logger.exception("This is an exception trace.", exc_info=True)
             self.asst_resp.setPlainText("Help file not found.")
 
     def on_about_click(self) -> None:

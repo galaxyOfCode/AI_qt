@@ -1,3 +1,4 @@
+import logging
 from openai import OpenAI
 from PyQt6.QtWidgets import (QApplication, QWidget,
                              QGridLayout, QFileDialog)
@@ -12,6 +13,17 @@ from voice import text_to_speech, speech_to_text
 
 config = Config()
 
+# Set up basic logging
+logging.basicConfig(
+    level=logging.INFO,  # Change to DEBUG for more verbosity
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler("app.log"),
+        logging.StreamHandler()
+    ]
+)
+
+logger = logging.getLogger(__name__)
 
 class MainWindow(QWidget):
     def __init__(self) -> None:

@@ -1,7 +1,19 @@
+import logging
 import openai
 
 from errors import handle_openai_errors
 
+# Set up basic logging
+logging.basicConfig(
+    level=logging.INFO,  # Change to DEBUG for more verbosity
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler("app.log"),
+        logging.StreamHandler()
+    ]
+)
+
+logger = logging.getLogger(__name__)
 
 def chat(client, model, reasoning, user_text, r_flag) -> str:
     """
@@ -32,4 +44,5 @@ def chat(client, model, reasoning, user_text, r_flag) -> str:
         return content
     except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
         content = handle_openai_errors(e)
+        logger.exception("This is an exception trace.", exc_info=True)
         return content

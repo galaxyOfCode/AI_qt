@@ -1,6 +1,20 @@
+import logging
 import openai
 
 from errors import handle_openai_errors, handle_file_errors
+
+
+# Set up basic logging
+logging.basicConfig(
+    level=logging.INFO,  # Change to DEBUG for more verbosity
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler("app.log"),
+        logging.StreamHandler()
+    ]
+)
+
+logger = logging.getLogger(__name__)
 
 
 def code_review(client, model, file_path) -> str:
@@ -27,9 +41,11 @@ def code_review(client, model, file_path) -> str:
                     messages=messages)
             except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
                 content = handle_openai_errors(e)
+                logger.exception("This is an exception trace.", exc_info=True)
                 return content
             content = response.choices[0].message.content
             return content
     except (FileNotFoundError, PermissionError, OSError) as e:
         content = handle_file_errors(e)
+        logger.exception("This is an exception trace.", exc_info=True)
         return content
