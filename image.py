@@ -1,8 +1,8 @@
+import base64
+from io import BytesIO
 import logging
 import openai
-import base64
 from PIL import Image
-from io import BytesIO
 
 from errors import (handle_openai_errors,
                     handle_file_errors,
@@ -45,6 +45,7 @@ def generate_image(client, model, quality, text, size, path) -> str:
         image.show()
 
         content = "Image generated successfully. Check the Desktop file 'image.jpg'."
+        logger.info("Image generated successfully.")
         return content
     
     except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
@@ -87,6 +88,7 @@ def describe_image(api_key, model, max_tokens, image_path, prompt) -> str:
         return content
     try:
         content = data["choices"][0]["message"]["content"]
+        logger.info("Vision content returned")
         return content
     except ValueError:
         error = data["error"]["message"]

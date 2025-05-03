@@ -41,6 +41,7 @@ def chat(client, model, reasoning, user_text, r_flag) -> str:
                 input=messages)
             
         content = response.output_text
+        logger.info("Chat content returned")
         return content
     except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
         content = handle_openai_errors(e)

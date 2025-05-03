@@ -31,6 +31,7 @@ def speech_to_text(client, model, choice) -> str:
                 model=model,
                 file=audio_file,
                 response_format="text")
+            logger.info("Speech to text content returned")
             return content
     except (FileNotFoundError, PermissionError, OSError) as e:
         content = handle_file_errors(e)
@@ -63,9 +64,11 @@ def text_to_speech(client, model, voice, text, path) -> str:
         if file_name:
             response.stream_to_file(file_name)
             content = f"{file_name} succesfully created"
+            logger.info("Text to speech content returned")
             return content
         else:
             content = "No file selected."
+            logger.info("No file selected for saving.")
             return content
 
     except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:

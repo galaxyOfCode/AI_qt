@@ -144,6 +144,7 @@ class MainWindow(QWidget):
 
         for button, action in action_mapping.items():
             if button.isChecked():
+                logger.info(f"Executing action for selected radio button: {button.text()}")
                 content = action()
                 break
 
@@ -153,6 +154,7 @@ class MainWindow(QWidget):
 
 
 def main() -> None:
+    logger.info("Starting application")
     app = QApplication([])
     mw = MainWindow()
     mw.show()

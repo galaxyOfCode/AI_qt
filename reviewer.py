@@ -44,6 +44,7 @@ def code_review(client, model, file_path) -> str:
                 logger.exception("This is an exception trace.", exc_info=True)
                 return content
             content = response.choices[0].message.content
+            logger.info("Code review content returned")
             return content
     except (FileNotFoundError, PermissionError, OSError) as e:
         content = handle_file_errors(e)

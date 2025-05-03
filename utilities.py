@@ -24,6 +24,7 @@ def get_model_names(client) -> str:
     header = "Current openAI Models:\n\n"
     model_ids.sort()
     content = ("\n".join(model_ids))
+    logger.info("Model names returned")
     return header + content
 
 
@@ -43,6 +44,7 @@ def get_settings(config) -> str:
     for key, value in settings.items():
         buffer = " " * (longest_key_length - len(key))
         content += f"{key}{buffer}\t{value}\n"
+    logger.info("Settings returned")
     return content
 
 
@@ -58,9 +60,11 @@ def update() -> str:
         content = ("\nopenai package not found\n")
     if original_version != updated_version:
         content = (f"{package} updated to version {updated_version}")
+        logger.info("Package updated")
     else:
         content = (
             f"\n{package} is already up to date: ({original_version})\n")
+        logger.info("Package update not required")
     return content
 
 

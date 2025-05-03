@@ -153,7 +153,7 @@ class ButtonFrame(QFrame):
 
     def on_quit_click(self) -> None:
         """ Exit program """
-
+        logger.info("Quit button clicked")
         QCoreApplication.quit()
 
 
@@ -194,6 +194,7 @@ class MainFrame(QFrame):
         config.reload_config()
         self.asst_resp.setTextColor(Qt.GlobalColor.black)
         self.asst_resp.setFontUnderline(False)
+        self.user_input.setFont(config.DEFAULT_FONT)
         self.user_input.setFocus()
 
     def on_help_click(self) -> None:
@@ -202,6 +203,7 @@ class MainFrame(QFrame):
         try:
             with open(config.help_file, "r") as file:
                 content = file.read()
+                logger.info("Help content returned")
             self.asst_resp.setPlainText(content)
         except FileNotFoundError:
             logger.exception("This is an exception trace.", exc_info=True)
@@ -213,6 +215,7 @@ class MainFrame(QFrame):
         about_content = "AI Assistant created by Jeff Hall"
         self.user_input.clear()
         self.asst_resp.clear()
+        logger.info("About content returned")
         self.asst_resp.setPlainText(f"{about_content}\n{config.version}")
 
     def on_save_click(self) -> None:
@@ -224,6 +227,8 @@ class MainFrame(QFrame):
         if file_name:
             with open(file_name, "w") as file:
                 file.write(self.asst_resp.toPlainText())
+            logger.info("File saved successfully")
             self.asst_resp.setPlainText(f"{file_name} succesfully created")
         else:
             self.asst_resp.setPlainText("No file selected.")
+            logger.info("No file selected for saving.")
