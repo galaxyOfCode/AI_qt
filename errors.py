@@ -1,42 +1,40 @@
 import openai
-from requests.exceptions import (HTTPError, 
-                                 Timeout, 
-                                 RequestException)
+import logging
+from requests.exceptions import HTTPError, Timeout, RequestException
+from typing import Optional, Any
 
 
-def handle_file_errors(exception) -> str:
-    content = None
-    if isinstance(exception, FileNotFoundError):
-        content = "Error: The file was not found."
-    if isinstance(exception, PermissionError):
-        content = "Error: Permission denied when trying to read the file."
-    if isinstance(exception, OSError):
-        content = (
-            "Error: An error occurred while reading from the file the file.")
-    return content
+def handle_file_errors(exc: Any) -> Optional[str]:
+    if isinstance(exc, FileNotFoundError):
+        return "Error: The file was not found."
+    elif isinstance(exc, PermissionError):
+        return "Error: Permission denied when trying to read the file."
+    elif isinstance(exc, OSError):
+        return "Error: An unexpected OS error occurred while reading the file."
+    # nothing matched
+    return None
 
 
-def handle_openai_errors(exception) -> str:
-    content = None
-    if isinstance(exception, openai.APIConnectionError):
-        content = "The server could not be reached\n" + \
-            str(exception.__cause__)
-    if isinstance(exception, openai.RateLimitError):
-        content = "A 'Rate Limit Notice' was received; we should back off a bit."
-    if isinstance(exception, openai.APIStatusError):
-        content = "A non-200-range status code was received: " + \
-            str(exception.status_code) + " " + str(exception.response)
-    return content
+def handle_openai_errors(exc: Any) -> Optional[str]:
+    # Log full stack trace for diagnostics
+    logging.exception("OpenAI exception caught")
+    
+    if isinstance(exc, openai.APIConnectionError):
+        cause = exc.__cause__ or exc
+        return f"Error: Could not reach OpenAI server ({cause})"
+    elif isinstance(exc, openai.RateLimitError):
+        return "Error: Rate limit exceeded. Please back off and retry shortly."
+    elif isinstance(exc, openai.APIStatusError):
+        return f"Error: OpenAI returned status {exc.status_code} - {exc.response}"
+    return None
 
 
-def handle_request_errors(exception) -> str:
-    content = None
-    if isinstance(exception, HTTPError):
-        content = "An HTTP error occurred"
-    if isinstance(exception, Timeout):
-        content = "The request timed-out"
-    if isinstance(exception, RequestException):
-        content = "An exception occurred while handling your request"
-    if isinstance(exception, Exception):
-        content = "An unexpected error occurred"
-    return content
+def handle_request_errors(exc: Any) -> Optional[str]:
+    if isinstance(exc, HTTPError):
+        return "Error: An HTTP error occurred while making the request."
+    elif isinstance(exc, Timeout):
+        return "Error: The request timed out."
+    elif isinstance(exc, RequestException):
+        return "Error: A network-level error occurred during the request."
+    # Don’t always swallow exceptions—only catch what you expect
+    return None

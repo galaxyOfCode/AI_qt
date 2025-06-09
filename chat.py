@@ -19,11 +19,11 @@ def chat(client, model, reasoning, user_text, r_flag) -> str:
     """
     This is an openai chatbot.  
 
-    The options are model (gpt-3.5, etc.). All responses will be displayed and copied to the clipboard. r_flag is a flag that will be set to 1 if the user is using a model that requires a lot of reasoning and critical thinking.
+    The options are model (gpt-4.1, etc.). All responses will be displayed and copied to the clipboard. r_flag is a flag that will be set to 1 if the user is using a model that requires a lot of reasoning and critical thinking. Reasoning is a string that will be used to provide the model with the level of reasoning to use. If r_flag is 0, then reasoning will not be used. The user_text is the text that the user has entered into the chat box.
     """
     
     try:
-        initial_prompt = ("""The user is a Computer Science university student named Jeff. He prefers to code in Python and also does website development that includes php. He only uses a Mac computer, so he doesn't need any instructions related to 'Windows PCs.'  He uses VS Code as his primary IDE. He learns best with explanations followed by an example.""")
+        initial_prompt = ("""The user is a Computer Science university graduate named Jeff. He prefers to code in Python and also does website development that includes php. He only uses a Mac computer, so he doesn't need any instructions related to 'Windows PCs.'  He uses VS Code as his primary IDE. He learns best with explanations followed by an example.""")
     
         if r_flag == 0:
             messages = [{"role": "system", "content": initial_prompt}]
@@ -39,7 +39,7 @@ def chat(client, model, reasoning, user_text, r_flag) -> str:
                 model=model,
                 reasoning={"effort": reasoning},
                 input=messages)
-            
+                 
         content = response.output_text
         logger.info("Chat content returned")
         return content

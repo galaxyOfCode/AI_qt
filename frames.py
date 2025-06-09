@@ -23,6 +23,9 @@ logger = logging.getLogger(__name__)
 
 
 class RadioFrame(QFrame):
+    """This class creates a frame with radio buttons for different functions.
+    It allows the user to select a function for the AI assistant to perform."""
+
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
         self.radio_layout = QVBoxLayout(self)
@@ -51,6 +54,9 @@ class RadioFrame(QFrame):
 
 
 class ModelFrame(QFrame):
+    """This class creates a frame with a combo box for selecting different AI models.
+    It allows the user to choose a model for the AI assistant."""
+
     def __init__(self, parent=None, models=None) -> None:
         super().__init__(parent)
         self.layout = QHBoxLayout(self)
@@ -75,6 +81,8 @@ class ModelFrame(QFrame):
     
 
 class ReasonFrame(QFrame):
+    """This class creates a frame with radio buttons for selecting the reasoning or image quality level. It allows the user to choose the level of reasoning or image quality for the AI assistant."""
+
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
         
@@ -113,6 +121,8 @@ class ReasonFrame(QFrame):
 
 # noinspection PyUnresolvedReferences
 class ButtonFrame(QFrame):
+    """This class creates a frame with buttons for various actions such as About, Clear, Help, Quit, Save, and Enter."""
+
     def __init__(self, mainframe, parent=None) -> None:
         super().__init__(parent)
         self.mainframe = mainframe
@@ -158,6 +168,8 @@ class ButtonFrame(QFrame):
 
 
 class MainFrame(QFrame):
+    """This class creates the main frame for the AI assistant application.
+    It includes user input and assistant response text areas, along with buttons for various actions."""
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
         self.default_font_bold = config.DEFAULT_FONT
