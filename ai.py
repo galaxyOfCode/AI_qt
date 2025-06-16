@@ -102,7 +102,7 @@ class MainWindow(QWidget):
         self.buttonframe.enter_btn.setEnabled(False)
         user_text = self.mainframe.user_input.toPlainText()
         chosen_model = self.modelframe.combo.currentText()
-        if chosen_model.startswith("gpt") or chosen_model == "o1-mini":
+        if chosen_model.startswith("gpt"):
             r_flag = 0
         else:
             r_flag = 1 

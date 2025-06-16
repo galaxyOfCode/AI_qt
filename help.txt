@@ -22,7 +22,7 @@ List Settings: Displays the current OpenAI settings used in this app. These can 
 
 Model Selection: For "Chat, Code Review and Vision" Operations only.  Choose the model you would like to use from the pull-down list.  All other operations use hard-coded models in the config.ini file.
 
-Reasoning/Image Quality: If the "Chat" radio button is selcted, select the effort that the model will use to "reason" through a solution.  Only works for o1, o3-mini and o4-mini models (ignored by the other models).  If the "Image Gen" radio button was selected, these buttons will determine the quality of the image.
+Reasoning/Image Quality: If the "Chat" radio button is selcted, select the effort that the model will use to "reason" through a solution.  Only works for o3, o3-mini, o3-pro and o4-mini models (ignored by the other models).  If the "Image Gen" radio button was selected, these buttons will determine the quality of the image.
 
 Other Buttons:
 Save: Will Save the current 'Assistant:' text as a .txt file
