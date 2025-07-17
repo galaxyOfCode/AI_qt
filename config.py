@@ -18,6 +18,7 @@ class Config:
         self.MODEL_LIST = self.cfg["OPENAI"]["MODEL_LIST"].split(", ")
         self.IMG_MODEL = self.cfg["OPENAI"]["IMG_MODEL"]
         self.IMG_SIZE = self.cfg["OPENAI"]["IMG_SIZE"]
+        self.VISION_MODEL = self.cfg["OPENAI"]["VISION_MODEL"]
         self.TRANSCRIBE_MODEL = self.cfg["OPENAI"]["TRANSCRIBE_MODEL"]
         self.TTS_MODEL = self.cfg["OPENAI"]["TTS_MODEL"]
         self.TTS_VOICE = self.cfg["OPENAI"]["TTS_VOICE"]

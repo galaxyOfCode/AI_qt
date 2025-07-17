@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 def get_model_names(client) -> str:
-    """List either the GPT models, or all models available through the API"""
+    """List all models available through the API"""
 
     model_list = client.models.list()
     models_data = model_list.data

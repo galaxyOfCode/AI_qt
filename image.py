@@ -54,7 +54,7 @@ def generate_image(client, model, quality, text, size, path) -> str:
         return content
 
 
-def describe_image(api_key, model, max_tokens, image_path, prompt) -> str:
+def describe_image(api_key, model, image_path, prompt) -> str:
     """The user can select an image and ask for a description"""
 
     import requests
@@ -87,6 +87,7 @@ def describe_image(api_key, model, max_tokens, image_path, prompt) -> str:
         logger.exception("This is an exception trace.", exc_info=True)
         return content
     try:
+        print(data)
         content = data["choices"][0]["message"]["content"]
         logger.info("Vision content returned")
         return content
