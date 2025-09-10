@@ -11,3 +11,4 @@ __pycache__
 app.log
 .venv
 .envrc
+pip_update.*
