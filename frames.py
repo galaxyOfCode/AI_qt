@@ -224,7 +224,7 @@ class MainFrame(QFrame):
     def on_about_click(self) -> None:
         """Displays About text (Version Number)"""
 
-        about_content = "AI Assistant created by Jeff Hall (2023-2025)"
+        about_content = "AI Assistant created by Jeff Hall (2023-2026)"
         self.user_input.clear()
         self.asst_resp.clear()
         logger.info("About content returned")
