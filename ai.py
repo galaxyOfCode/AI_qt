@@ -61,7 +61,7 @@ class MainWindow(QWidget):
         self.setLayout(self.grid)
         self.mainframe.user_input.setFocus()
 
-    def no_prompt(self, box) -> None:
+    def no_prompt(self, box: str) -> None:
         """Error message when no required user prompt detected"""
 
         self.mainframe.asst_resp.setPlainText(
@@ -83,7 +83,7 @@ class MainWindow(QWidget):
         file = QFileDialog.getOpenFileName(None, "Select a File")
         return "" if file == "" else file[0]
 
-    def set_response(self, content) -> None:
+    def set_response(self, content: str) -> None:
         """Implement setting the response in the UI"""
 
         button = self.radioframe.get_checked_radio_button()
@@ -127,7 +127,7 @@ class MainWindow(QWidget):
                                                                      reasoning, user_text,
                                                                      config.IMG_SIZE,
                                                                      config.image_path),
-            self.radioframe.radio_buttons[3]: lambda: describe_image(config.api_key,
+            self.radioframe.radio_buttons[3]: lambda: describe_image(self.client,
                                                                      config.VISION_MODEL,
                                                                      self.get_file_name(), user_text),
             self.radioframe.radio_buttons[4]: lambda: speech_to_text(self.client,

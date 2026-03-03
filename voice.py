@@ -17,7 +17,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def speech_to_text(client, model, choice) -> str:
+def speech_to_text(client: openai.OpenAI, model: str, choice: str) -> str:
     """
     Transcribes a voice file to text
 
@@ -43,7 +43,7 @@ def speech_to_text(client, model, choice) -> str:
         return content
 
 
-def text_to_speech(client, model, voice, text, path) -> str:
+def text_to_speech(client: openai.OpenAI, model: str, voice: str, text: str, path: str) -> str:
     """
     Text to speech
 

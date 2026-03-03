@@ -1,6 +1,8 @@
 import logging
+import openai
 import subprocess
 
+from config import Config
 
 # Set up basic logging
 logging.basicConfig(
@@ -15,7 +17,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def get_model_names(client) -> str:
+def get_model_names(client: openai.OpenAI) -> str:
     """List all models available through the API"""
 
     model_list = client.models.list()
@@ -28,7 +30,7 @@ def get_model_names(client) -> str:
     return header + content
 
 
-def get_settings(config) -> str:
+def get_settings(config: Config) -> str:
     """ Print all hardcoded 'Magic Numbers' """
 
     settings = {
@@ -68,7 +70,7 @@ def update() -> str:
     return content
 
 
-def check_package_version(package_name) -> str | None:
+def check_package_version(package_name: str) -> str | None:
     """Returns the version number of a python package"""
 
     try:

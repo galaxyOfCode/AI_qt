@@ -17,7 +17,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def code_review(client, model, file_path) -> str:
+def code_review(client: openai.OpenAI, model: str, file_path: str) -> str:
     """
     Reviews a code file.
 

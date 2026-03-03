@@ -15,7 +15,7 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-def chat(client, model, reasoning, user_text, r_flag) -> str:
+def chat(client: openai.OpenAI, model: str, reasoning: str, user_text: str, r_flag: int) -> str:
     """
     This is an openai chatbot.  
 

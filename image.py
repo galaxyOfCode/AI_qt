@@ -3,6 +3,7 @@ from io import BytesIO
 import logging
 import openai
 from PIL import Image
+from requests.exceptions import HTTPError, Timeout, RequestException
 
 from errors import (handle_openai_errors,
                     handle_file_errors,
@@ -21,7 +22,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def generate_image(client, model, quality, text, size, path) -> str:
+def generate_image(client: openai.OpenAI, model: str, quality: str, text: str, size: str, path) -> str:
     """
     Image generator
 
@@ -54,44 +55,36 @@ def generate_image(client, model, quality, text, size, path) -> str:
         return content
 
 
-def describe_image(api_key, model, image_path, prompt) -> str:
-    """The user can select an image and ask for a description"""
-
-    import requests
-    from requests.exceptions import HTTPError, Timeout, RequestException
+def describe_image(client: openai.OpenAI, model: str, image_path: str, prompt: str) -> str:
+    """Uses OpenAI SDK to describe a local image via base64 encoding."""
+    
     try:
-        with open(image_path, "rb") as image_file:
-            base64_image = base64.b64encode(image_file.read()).decode("utf-8")
+        with open(image_path, "rb") as f:
+            base64_image = base64.b64encode(f.read()).decode("utf-8")
     except (OSError, FileNotFoundError, PermissionError) as e:
-        content = handle_file_errors(e)
-        logger.exception("This is an exception trace.", exc_info=True)
-        return content
-    user_text = prompt
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {api_key}"}
-    payload = {
-        "model": model,
-        "messages": [{"role": "user", "content": [{
-            "type": "text",
-            "text": user_text}, {
-            "type": "image_url",
-            "image_url": {
-                "url": f"data:image/png;base64,{base64_image}"}}]}]}
+        logger.exception("File access error.")
+        return f"File error: {str(e)}"
+
     try:
-        response = requests.post(
-            "https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
-        data = response.json()
-    except (HTTPError, Timeout, RequestException, Exception) as e:
-        content = handle_request_errors(e)
-        logger.exception("This is an exception trace.", exc_info=True)
-        return content
-    try:
-        print(data)
-        content = data["choices"][0]["message"]["content"]
-        logger.info("Vision content returned")
-        return content
-    except ValueError:
-        error = data["error"]["message"]
-        logger.exception("This is an exception trace.", exc_info=True)
-        return error
+        response = client.chat.completions.create(
+            model=model,
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": prompt},
+                        {
+                            "type": "image_url",
+                            "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"},
+                        },
+                    ],
+                }
+            ],
+        )
+        return response.choices[0].message.content
+    except openai.OpenAIError as e:
+        logger.exception("OpenAI API error.")
+        return f"API error: {str(e)}"
+    except Exception as e:
+        logger.exception("Unexpected error.")
+        return f"Unexpected error: {str(e)}"
