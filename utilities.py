@@ -1,6 +1,8 @@
+"""Utility functions for the AI assistant application."""
+
 import logging
-import openai
 import subprocess
+import openai
 
 from config import Config
 
@@ -25,7 +27,7 @@ def get_model_names(client: openai.OpenAI) -> str:
     model_ids = [model.id for model in models_data]
     header = "Current openAI Models:\n\n"
     model_ids.sort()
-    content = ("\n".join(model_ids))
+    content = "\n".join(model_ids)
     logger.info("Model names returned")
     return header + content
 
@@ -59,9 +61,9 @@ def update() -> str:
                           "openai"], stdout=subprocess.DEVNULL)
     updated_version = check_package_version(package)
     if original_version == "error" or updated_version == "error":
-        content = ("\nopenai package not found\n")
+        content = "\nopenai package not found\n"
     if original_version != updated_version:
-        content = (f"{package} updated to version {updated_version}")
+        content = f"{package} updated to version {updated_version}"
         logger.info("Package updated")
     else:
         content = (
@@ -70,7 +72,7 @@ def update() -> str:
     return content
 
 
-def check_package_version(package_name: str) -> str | None:
+def check_package_version(package_name: str) -> str:
     """Returns the version number of a python package"""
 
     try:
@@ -79,6 +81,7 @@ def check_package_version(package_name: str) -> str | None:
         for line in result.split('\n'):
             if line.startswith('Version:'):
                 return line.split(': ')[1]
+        return "Version not found"
     except subprocess.CalledProcessError:
         logger.exception("This is an exception trace.", exc_info=True)
         return "error"

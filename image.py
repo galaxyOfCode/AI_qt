@@ -1,13 +1,12 @@
+"""Image generation and description functions using OpenAI API."""
+
 import base64
 from io import BytesIO
 import logging
 import openai
 from PIL import Image
-from requests.exceptions import HTTPError, Timeout, RequestException
 
-from errors import (handle_openai_errors,
-                    handle_file_errors,
-                    handle_request_errors)
+from errors import handle_openai_errors
 
 # Set up basic logging
 logging.basicConfig(
@@ -37,7 +36,7 @@ def generate_image(client: openai.OpenAI, model: str, quality: str, text: str, s
             size=size,
             n=1,
         )
-        
+
         image_base64 = result.data[0].b64_json
         image_bytes = base64.b64decode(image_base64)
 
@@ -48,7 +47,7 @@ def generate_image(client: openai.OpenAI, model: str, quality: str, text: str, s
         content = "Image generated successfully. Check the Desktop file 'image.jpg'."
         logger.info("Image generated successfully.")
         return content
-    
+
     except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
         content = handle_openai_errors(e)
         logger.exception("This is an exception trace.", exc_info=True)
@@ -57,7 +56,7 @@ def generate_image(client: openai.OpenAI, model: str, quality: str, text: str, s
 
 def describe_image(client: openai.OpenAI, model: str, image_path: str, prompt: str) -> str:
     """Uses OpenAI SDK to describe a local image via base64 encoding."""
-    
+
     try:
         with open(image_path, "rb") as f:
             base64_image = base64.b64encode(f.read()).decode("utf-8")
@@ -85,6 +84,6 @@ def describe_image(client: openai.OpenAI, model: str, image_path: str, prompt: s
     except openai.OpenAIError as e:
         logger.exception("OpenAI API error.")
         return f"API error: {str(e)}"
-    except Exception as e:
+    except (ValueError, TypeError, AttributeError) as e:
         logger.exception("Unexpected error.")
         return f"Unexpected error: {str(e)}"

@@ -1,3 +1,5 @@
+"""UI frame definitions for AI Assistant application."""
+
 import logging
 from PyQt6.QtWidgets import (QTextEdit, QFrame, QVBoxLayout,
                              QRadioButton, QPushButton, QLabel,
@@ -7,7 +9,6 @@ from PyQt6.QtCore import QCoreApplication, Qt
 from config import Config
 
 config = Config()
-
 
 # Set up basic logging
 logging.basicConfig(
@@ -30,23 +31,26 @@ class RadioFrame(QFrame):
         super().__init__(parent)
         self.radio_layout = QVBoxLayout(self)
         self.radio_buttons = []  # List to store radio buttons
-        self.radio_button_labels = ["Chat", "Code Review", "Image Gen", "Vision", 
+        self.radio_button_labels = ["Chat", "Code Review", "Image Gen", "Vision",
                                     "Speech-to-Text", "Text-to-Speech", "List All Models", 
                                     "Update API", "List Settings"]
         self.add_widgets()
         self.layout_ui()
 
     def layout_ui(self) -> None:
+        """Set default radio button and layout."""
         self.radio_buttons[0].setChecked(True)
         self.setLayout(self.radio_layout)
 
     def add_widgets(self) -> None:
+        """Add radio buttons to the layout."""
         for label in self.radio_button_labels:
             rb = QRadioButton(label)
             self.radio_buttons.append(rb)
             self.radio_layout.addWidget(rb)
 
     def get_checked_radio_button(self) -> str | None:
+        """Return the label of the currently checked radio button, or None if none are checked."""
         for rb in self.radio_buttons:
             if rb.isChecked():
                 return rb.text()
@@ -67,7 +71,7 @@ class ModelFrame(QFrame):
 
         # Combo box
         self.combo = QComboBox()
-        models = config.MODEL_LIST 
+        models = config.MODEL_LIST
         for m in models:
             self.combo.addItem(m)
 
@@ -77,34 +81,37 @@ class ModelFrame(QFrame):
         self.setLayout(self.layout)
 
     def get_selected_model(self) -> str:
+        """Return the currently selected model from the combo box."""
         return self.combo.currentText()
-    
+
 
 class ReasonFrame(QFrame):
     """This class creates a frame with radio buttons for selecting the reasoning or image quality level. It allows the user to choose the level of reasoning or image quality for the AI assistant."""
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
-        
+
         self.radio_buttons = []
         self.radio_button_labels = ["low", "medium", "high"]
-        
+
         self.label = QLabel("Reasoning/Image Quality:")
 
         # Create the vertical layout for the label + buttons
         self.main_layout = QVBoxLayout(self)
-        
+
         # Create a horizontal layout just for the radio buttons
         self.button_layout = QHBoxLayout()
-        
+
         self.add_widgets()
         self.layout_ui()
 
     def layout_ui(self) -> None:
+        """Set default radio button and layout."""
         self.radio_buttons[1].setChecked(True)
         self.setLayout(self.main_layout)
 
     def add_widgets(self) -> None:
+        """Add radio buttons to the layout."""
         self.main_layout.addWidget(self.label)
         for label in self.radio_button_labels:
             rb = QRadioButton(label)
@@ -113,11 +120,12 @@ class ReasonFrame(QFrame):
         self.main_layout.addLayout(self.button_layout)
 
     def get_checked_radio_button(self) -> str | None:
+        """Return the label of the currently checked radio button, or None if none are checked."""
         for rb in self.radio_buttons:
             if rb.isChecked():
                 return rb.text()
         return None
-    
+
 
 # noinspection PyUnresolvedReferences
 class ButtonFrame(QFrame):
@@ -138,6 +146,7 @@ class ButtonFrame(QFrame):
         self.setup_connections()
 
     def set_ui_properties(self) -> None:
+        """Set fixed width for buttons."""
         self.about_btn.setFixedWidth(config.BTN_WIDTH)
         self.clear_btn.setFixedWidth(config.BTN_WIDTH)
         self.enter_btn.setFixedWidth(config.BTN_WIDTH)
@@ -146,6 +155,7 @@ class ButtonFrame(QFrame):
         self.help_btn.setFixedWidth(config.BTN_WIDTH)
 
     def layout_ui(self) -> None:
+        """Add buttons to the layout."""
         self.button_layout.addWidget(self.enter_btn)
         self.button_layout.addWidget(self.save_btn)
         self.button_layout.addWidget(self.clear_btn)
@@ -155,6 +165,7 @@ class ButtonFrame(QFrame):
         self.setLayout(self.button_layout)
 
     def setup_connections(self) -> None:
+        """Connect buttons to their respective functions."""
         self.quit_btn.clicked.connect(self.on_quit_click)
         self.about_btn.clicked.connect(self.mainframe.on_about_click)
         self.clear_btn.clicked.connect(self.mainframe.on_clear_click)
@@ -183,6 +194,7 @@ class MainFrame(QFrame):
         self.add_widgets()
 
     def set_ui_properties(self) -> None:
+        """Set properties for UI elements."""
         self.user_lbl.setFont(self.default_font_bold)
         self.user_input.setFixedHeight(config.USER_INPUT_HT)
         self.asst_lbl.setFont(self.default_font_bold)
@@ -192,6 +204,7 @@ class MainFrame(QFrame):
         self.user_input.setFocus()
 
     def add_widgets(self) -> None:
+        """Add widgets to the layout."""
         self.main_layout.addWidget(self.user_lbl)
         self.main_layout.addWidget(self.user_input)
         self.main_layout.addWidget(self.asst_lbl)
@@ -200,7 +213,6 @@ class MainFrame(QFrame):
 
     def on_clear_click(self) -> None:
         """ Clear all text boxes and reset radio button """
-
         self.user_input.clear()
         self.asst_resp.clear()
         config.reload_config()
@@ -211,9 +223,8 @@ class MainFrame(QFrame):
 
     def on_help_click(self) -> None:
         """Displays Help text"""
-
         try:
-            with open(config.help_file, "r") as file:
+            with open(config.help_file, "r", encoding="utf-8") as file:
                 content = file.read()
                 logger.info("Help content returned")
             self.asst_resp.setPlainText(content)
@@ -223,7 +234,6 @@ class MainFrame(QFrame):
 
     def on_about_click(self) -> None:
         """Displays About text (Version Number)"""
-
         about_content = "AI Assistant created by Jeff Hall (2023-2026)"
         self.user_input.clear()
         self.asst_resp.clear()
@@ -231,13 +241,14 @@ class MainFrame(QFrame):
         self.asst_resp.setPlainText(f"{about_content}\n{config.version}")
 
     def on_save_click(self) -> None:
+        """Saves the assistant response to a text file."""
         file_name, _ = QFileDialog.getSaveFileName(
             None,
             "Save File",
             config.clipboard_path,
             "Text files (*.txt)",)
         if file_name:
-            with open(file_name, "w") as file:
+            with open(file_name, "w", encoding="utf-8") as file:
                 file.write(self.asst_resp.toPlainText())
             logger.info("File saved successfully")
             self.asst_resp.setPlainText(f"{file_name} succesfully created")

@@ -1,10 +1,13 @@
-import openai
+"""Error handling utilities for AI Assistant application."""
+
 import logging
-from requests.exceptions import HTTPError, Timeout, RequestException
 from typing import Optional, Any
+import openai
+from requests.exceptions import HTTPError, Timeout, RequestException
 
 
 def handle_file_errors(exc: Any) -> Optional[str]:
+    """Handle file-related errors and return user-friendly messages."""
     if isinstance(exc, FileNotFoundError):
         return "Error: The file was not found."
     elif isinstance(exc, PermissionError):
@@ -16,25 +19,27 @@ def handle_file_errors(exc: Any) -> Optional[str]:
 
 
 def handle_openai_errors(exc: Any) -> Optional[str]:
+    """Handle OpenAI API errors and return user-friendly messages."""
     # Log full stack trace for diagnostics
     logging.exception("OpenAI exception caught")
-    
+
     if isinstance(exc, openai.APIConnectionError):
         cause = exc.__cause__ or exc
         return f"Error: Could not reach OpenAI server ({cause})"
-    elif isinstance(exc, openai.RateLimitError):
+    if isinstance(exc, openai.RateLimitError):
         return "Error: Rate limit exceeded. Please back off and retry shortly."
-    elif isinstance(exc, openai.APIStatusError):
+    if isinstance(exc, openai.APIStatusError):
         return f"Error: OpenAI returned status {exc.status_code} - {exc.response}"
     return None
 
 
 def handle_request_errors(exc: Any) -> Optional[str]:
+    """Handle network-related errors and return user-friendly messages."""
     if isinstance(exc, HTTPError):
         return "Error: An HTTP error occurred while making the request."
-    elif isinstance(exc, Timeout):
+    if isinstance(exc, Timeout):
         return "Error: The request timed out."
-    elif isinstance(exc, RequestException):
+    if isinstance(exc, RequestException):
         return "Error: A network-level error occurred during the request."
     # Don’t always swallow exceptions—only catch what you expect
     return None

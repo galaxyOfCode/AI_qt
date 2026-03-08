@@ -1,8 +1,9 @@
+"""Module for code review functionality using OpenAI API."""
+
 import logging
 import openai
 
 from errors import handle_openai_errors, handle_file_errors
-
 
 # Set up basic logging
 logging.basicConfig(
@@ -26,12 +27,12 @@ def code_review(client: openai.OpenAI, model: str, file_path: str) -> str:
     """
 
     try:
-        with open(file_path, "r") as file:
+        with open(file_path, "r", encoding="utf-8") as file:
             content = file.read()
-            initial_prompt = ("""You will receive a file's contents as text. 
+            initial_prompt = """You will receive a file's contents as text.
                               Generate a code review for the file.  
                               Indicate what changes should be made to improve its style, performance, readability, and maintainability.
-                              If there are any reputable libraries that could be introduced to improve the code, suggest them.  Be kind and constructive.  For each suggested change, include line numbers to which you are referring.""")
+                              If there are any reputable libraries that could be introduced to improve the code, suggest them.  Be kind and constructive.  For each suggested change, include line numbers to which you are referring."""
             messages = [
                 {"role": "system", "content": initial_prompt},
                 {"role": "user", "content": f"Code review the following file: {content}"}]

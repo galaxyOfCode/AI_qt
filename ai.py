@@ -1,3 +1,6 @@
+"""Main application file for AI Assistant"""
+
+import sys
 import logging
 from openai import OpenAI
 from PyQt6.QtWidgets import (QApplication, QWidget,
@@ -26,6 +29,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 class MainWindow(QWidget):
+    """Main application window"""
     def __init__(self) -> None:
         super().__init__()
         self.client = OpenAI()
@@ -105,19 +109,19 @@ class MainWindow(QWidget):
         if chosen_model.startswith("gpt"):
             r_flag = 0
         else:
-            r_flag = 1 
-        
+            r_flag = 1
+
         reasoning = self.reasonframe.get_checked_radio_button()
 
         if not user_text and self.is_user_input_required():
             self.no_prompt("User")
             return
-        
+
         action_mapping = {
             self.radioframe.radio_buttons[0]: lambda: chat(self.client,
-                                                           chosen_model, 
+                                                           chosen_model,
                                                            reasoning,
-                                                           user_text, 
+                                                           user_text,
                                                            r_flag),
             self.radioframe.radio_buttons[1]: lambda: code_review(self.client,
                                                                   chosen_model,
@@ -138,13 +142,13 @@ class MainWindow(QWidget):
                                                                      config.TTS_VOICE, user_text,
                                                                      config.speech_file_path),
             self.radioframe.radio_buttons[6]: lambda: get_model_names(self.client),
-            self.radioframe.radio_buttons[7]: lambda: update(),
+            self.radioframe.radio_buttons[7]: update,
             self.radioframe.radio_buttons[8]: lambda: get_settings(config),
         }
 
         for button, action in action_mapping.items():
             if button.isChecked():
-                logger.info(f"Executing action for selected radio button: {button.text()}")
+                logger.info("Executing action for selected radio button: %s", button.text())
                 content = action()
                 break
 
@@ -154,11 +158,12 @@ class MainWindow(QWidget):
 
 
 def main() -> None:
+    """Main function to run the application"""
     logger.info("Starting application")
     app = QApplication([])
     mw = MainWindow()
     mw.show()
-    exit(app.exec())
+    sys.exit(app.exec())
 
 
 if __name__ == "__main__":

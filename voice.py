@@ -1,3 +1,5 @@
+"""Module for voice-related functionality using OpenAI API."""
+
 import logging
 import openai
 from PyQt6.QtWidgets import QFileDialog
@@ -62,14 +64,13 @@ def text_to_speech(client: openai.OpenAI, model: str, voice: str, text: str, pat
             path,
             "MP3 Files (*.mp3)",)
         if file_name:
-            response.stream_to_file(file_name)
+            response.write_to_file(file_name)
             content = f"{file_name} succesfully created"
             logger.info("Text to speech content returned")
             return content
-        else:
-            content = "No file selected."
-            logger.info("No file selected for saving.")
-            return content
+        content = "No file selected."
+        logger.info("No file selected for saving.")
+        return content
 
     except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
         content = handle_openai_errors(e)
