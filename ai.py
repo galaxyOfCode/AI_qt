@@ -16,9 +16,8 @@ from voice import text_to_speech, speech_to_text
 
 config = Config()
 
-# Set up basic logging
 logging.basicConfig(
-    level=logging.INFO,  # Change to DEBUG for more verbosity
+    level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.FileHandler("app.log"),
@@ -41,27 +40,22 @@ class MainWindow(QWidget):
         self.setWindowTitle("AI Assistant")
         self.clipboard = QApplication.clipboard()
 
-        # Create a layout
         self.grid = QGridLayout()
 
-        # Create frames
         self.mainframe = MainFrame()
         self.radioframe = RadioFrame(self.mainframe)
         self.buttonframe = ButtonFrame(self.mainframe)
         self.modelframe = ModelFrame(self.mainframe)
         self.reasonframe = ReasonFrame(self.mainframe)
 
-        # Add frames to the layout
         self.grid.addWidget(self.radioframe, 0, 0)
         self.grid.addWidget(self.modelframe, 1, 0)
         self.grid.addWidget(self.reasonframe, 2, 0)
         self.grid.addWidget(self.buttonframe, 3, 0)
         self.grid.addWidget(self.mainframe, 0, 1, 4, 1)
 
-        # Set Enter button action
         self.buttonframe.enter_btn.clicked.connect(self.on_enter_click)
 
-        # Set layout
         self.setLayout(self.grid)
         self.mainframe.user_input.setFocus()
 
@@ -159,6 +153,7 @@ class MainWindow(QWidget):
 
 def main() -> None:
     """Main function to run the application"""
+
     logger.info("Starting application")
     app = QApplication([])
     mw = MainWindow()

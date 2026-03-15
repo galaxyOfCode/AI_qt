@@ -5,9 +5,8 @@ import openai
 
 from errors import handle_openai_errors
 
-# Set up basic logging
 logging.basicConfig(
-    level=logging.INFO,  # Change to DEBUG for more verbosity
+    level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.FileHandler("app.log"),

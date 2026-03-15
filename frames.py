@@ -10,9 +10,8 @@ from config import Config
 
 config = Config()
 
-# Set up basic logging
 logging.basicConfig(
-    level=logging.INFO,  # Change to DEBUG for more verbosity
+    level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.FileHandler("app.log"),
@@ -30,7 +29,7 @@ class RadioFrame(QFrame):
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
         self.radio_layout = QVBoxLayout(self)
-        self.radio_buttons = []  # List to store radio buttons
+        self.radio_buttons = []
         self.radio_button_labels = ["Chat", "Code Review", "Image Gen", "Vision",
                                     "Speech-to-Text", "Text-to-Speech", "List All Models", 
                                     "Update API", "List Settings"]
@@ -65,17 +64,14 @@ class ModelFrame(QFrame):
         super().__init__(parent)
         self.layout = QHBoxLayout(self)
 
-        # Label
         self.label = QLabel("Model:")
         self.label.setFixedWidth(50)
 
-        # Combo box
         self.combo = QComboBox()
         models = config.MODEL_LIST
         for m in models:
             self.combo.addItem(m)
 
-        # Assemble
         self.layout.addWidget(self.label)
         self.layout.addWidget(self.combo)
         self.setLayout(self.layout)
@@ -96,10 +92,8 @@ class ReasonFrame(QFrame):
 
         self.label = QLabel("Reasoning/Image Quality:")
 
-        # Create the vertical layout for the label + buttons
         self.main_layout = QVBoxLayout(self)
 
-        # Create a horizontal layout just for the radio buttons
         self.button_layout = QHBoxLayout()
 
         self.add_widgets()
