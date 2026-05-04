@@ -2,6 +2,7 @@
 
 from configparser import ConfigParser
 from os import getenv
+
 from PyQt6.QtGui import QFont
 
 

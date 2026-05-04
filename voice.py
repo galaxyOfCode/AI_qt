@@ -1,6 +1,7 @@
 """Module for voice-related functionality using OpenAI API."""
 
 import logging
+
 import openai
 from PyQt6.QtWidgets import QFileDialog
 

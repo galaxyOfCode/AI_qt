@@ -1,18 +1,18 @@
 """Main application file for AI Assistant"""
 
-import sys
 import logging
+import sys
+
 from openai import OpenAI
-from PyQt6.QtWidgets import (QApplication, QWidget,
-                             QGridLayout, QFileDialog)
+from PyQt6.QtWidgets import QApplication, QFileDialog, QGridLayout, QWidget
 
 from chat import chat
 from config import Config
-from frames import MainFrame, ButtonFrame, RadioFrame, ModelFrame, ReasonFrame
+from frames import ButtonFrame, MainFrame, ModelFrame, RadioFrame, ReasonFrame
 from image import describe_image, generate_image
 from reviewer import code_review
 from utilities import get_model_names, get_settings, update
-from voice import text_to_speech, speech_to_text
+from voice import speech_to_text, text_to_speech
 
 config = Config()
 

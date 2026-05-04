@@ -1,8 +1,9 @@
 """Image generation and description functions using OpenAI API."""
 
 import base64
-from io import BytesIO
 import logging
+from io import BytesIO
+
 import openai
 from PIL import Image
 

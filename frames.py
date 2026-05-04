@@ -1,10 +1,11 @@
 """UI frame definitions for AI Assistant application."""
 
 import logging
-from PyQt6.QtWidgets import (QTextEdit, QFrame, QVBoxLayout,
-                             QRadioButton, QPushButton, QLabel,
-                             QFileDialog, QHBoxLayout, QComboBox)
+
 from PyQt6.QtCore import QCoreApplication, Qt
+from PyQt6.QtWidgets import (QComboBox, QFileDialog, QFrame, QHBoxLayout,
+                             QLabel, QPushButton, QRadioButton, QTextEdit,
+                             QVBoxLayout)
 
 from config import Config
 

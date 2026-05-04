@@ -1,9 +1,10 @@
 """Error handling utilities for AI Assistant application."""
 
 import logging
-from typing import Optional, Any
+from typing import Any, Optional
+
 import openai
-from requests.exceptions import HTTPError, Timeout, RequestException
+from requests.exceptions import HTTPError, RequestException, Timeout
 
 
 def handle_file_errors(exc: Any) -> Optional[str]:

@@ -1,6 +1,7 @@
 """Chatbot functionality for AI Assistant application."""
 
 import logging
+
 import openai
 
 from errors import handle_openai_errors

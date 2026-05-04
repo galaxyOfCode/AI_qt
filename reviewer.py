@@ -1,9 +1,10 @@
 """Module for code review functionality using OpenAI API."""
 
 import logging
+
 import openai
 
-from errors import handle_openai_errors, handle_file_errors
+from errors import handle_file_errors, handle_openai_errors
 
 logging.basicConfig(
     level=logging.INFO,
