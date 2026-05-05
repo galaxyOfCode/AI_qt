@@ -6,14 +6,6 @@ from os import getenv
 from PyQt6.QtGui import QFont
 
 
-def get_api_key() -> str:
-    """Retrieve the OpenAI API key from environment variables."""
-    api_key = getenv("OPENAI_API_KEY")
-    if not api_key:
-        raise ValueError("API key not found in environment variables.")
-    return api_key
-
-
 class Config:
     """Configuration management for AI Assistant application."""
     _instance = None
@@ -42,21 +34,33 @@ class Config:
         self.TTS_MODEL = self.cfg["OPENAI"]["TTS_MODEL"]
         self.TTS_VOICE = self.cfg["OPENAI"]["TTS_VOICE"]
         self.MAX_TOKENS = self.cfg.getint("OPENAI", "MAX_TOKENS")
+
         self.speech_file_path = self.cfg["PATH"]["speech_file_path"]
         self.image_path = self.cfg["PATH"]["image_file_path"]
         self.clipboard_path = self.cfg["PATH"]["clipboard_path"]
+
+        self.BTN_WIDTH = self.cfg.getint("HARD", "BTN_WIDTH")
+        self.USER_INPUT_HT = self.cfg.getint("HARD", "USER_INPUT_HT")
+        self.ASST_RESP_HT = self.cfg.getint("HARD", "ASST_RESP_HT")
+        self.ASST_FONT = QFont(self.cfg["HARD"]["ASST_FONT"].split(",")[0], int(self.cfg["HARD"]["ASST_FONT"].split(",")[1]))
+        self.DEFAULT_FONT = QFont(self.cfg["HARD"]["DEFAULT_FONT"].split(",")[0], int(self.cfg["HARD"]["DEFAULT_FONT"].split(",")[1]))
+
         self.version = self.cfg["OTHER"]["version"]
+
+        self.help_file = self.cfg["FILES"]["help_file"]
+
         self.api_key = get_api_key()
-        self.BTN_WIDTH = 80
-        self.USER_INPUT_HT = 100
-        self.ASST_RESP_HT = 300
-        self.ASST_FONT = QFont("Menlo", 13)
-        self.DEFAULT_FONT = QFont("Arial", 14)
-        self.help_file = "help.txt"
 
         self._initialized = True
 
     def reload_config(self) -> None:
         """Reload the configuration settings."""
-        self.ASST_FONT = QFont("Menlo", 13)
-        self.DEFAULT_FONT = QFont("Arial", 14)
+        self.ASST_FONT = QFont(self.cfg["HARD"]["ASST_FONT"].split(",")[0], int(self.cfg["HARD"]["ASST_FONT"].split(",")[1]))
+        self.DEFAULT_FONT = QFont(self.cfg["HARD"]["DEFAULT_FONT"].split(",")[0], int(self.cfg["HARD"]["DEFAULT_FONT"].split(",")[1]))
+
+def get_api_key() -> str:
+    """Retrieve the OpenAI API key from environment variables."""
+    api_key = getenv("OPENAI_API_KEY")
+    if not api_key:
+        raise ValueError("API key not found in environment variables.")
+    return api_key
